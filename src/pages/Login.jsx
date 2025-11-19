@@ -98,12 +98,10 @@ function Login() {
             </button>
 
             <p className="signin-text">
-              Don't have an account?
-              <span onClick={() => navigate("/signup")}>Sign Up</span>
+              Dont have an account?
+              <span onClick={() => navigate('/login')}>Sign Up</span>
             </p>
-          </form>
-        </div>
-
+            
         <div className="footer">Help / Terms / Privacy</div>
       </div>
 
