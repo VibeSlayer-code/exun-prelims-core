@@ -91,10 +91,11 @@ function Signup() {
 
             <button className="login-btn" type="submit">Register</button>
 
-            <p className="signin-text">
-              Already have an account?
-              <span onClick={() => navigate('/login')}>Sign In</span>
-            </p>
+          <p className="signin-text">
+          Already have an account?{' '}
+          <span onClick={() => navigate('/login')}>Log In</span>
+          </p>
+
           </form>
         </div>
 
