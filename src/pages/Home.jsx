@@ -70,9 +70,7 @@ function Home() {
             </h1>
           </div>
           <p className="hero-subtitle">
-            There is some kind of paragraph here, something really powerful,
-            perhaps too powerful; i can't really put my finger on it, perhaps
-            you'd understand after some time and more thought.
+            We connect ideas, people, and purpose—transforming small moments into meaningful outcomes that shape something bigger.
           </p>
         </section>
 
@@ -130,8 +128,8 @@ function Home() {
           <div className="section-header">
             <h2 className="section-title">Satisfied Customers</h2>
             <p className="section-subtitle">
-              Some awesome sub heading here-or-there<br />
-              It is going all according to plan
+              See our satisfied customers </p>
+
             </p>
           </div>
           <div className="testimonials-grid">
