@@ -130,7 +130,7 @@ function Home() {
             <p className="section-subtitle">
               See our satisfied customers </p>
 
-            </p>
+            
           </div>
           <div className="testimonials-grid">
             <div className="testimonial-card rating-card" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
