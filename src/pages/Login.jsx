@@ -20,11 +20,14 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!email || !password) {
       showNotification("Please fill in both fields");
       return;
     }
+
     const data = { email, password };
+    
     try {
       const res = await fetch("https://nixun-api.onrender.com/check_user", {
         method: "POST",
@@ -37,7 +40,9 @@ function Login() {
       if (json.status === "OK") {
         localStorage.setItem("login", "true");
         showNotification("Login successful!");
-        navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
       } else {
         showNotification(json.message || "Login failed");
       }
@@ -57,11 +62,11 @@ function Login() {
           </p>
 
           <div className="idk">
-            <button className="google">
+            <button type="button" className="google">
               <img src="/assets/Login/google.png" className="icon" alt="g" />
               Sign in with Google
             </button>
-            <button className="github">
+            <button type="button" className="github">
               <img src="/assets/Login/apple.png" className="icon" alt="gh" />
               Sign in with Apple ID
             </button>
@@ -98,8 +103,8 @@ function Login() {
             </button>
 
             <p className="signin-text">
-              Dont have an account?
-              <span onClick={() => navigate('/login')}>Sign Up</span>
+              Don't have an account?{" "}
+              <span onClick={() => navigate('/signup')}>Sign Up</span>
             </p>
           </form>
 
@@ -111,13 +116,12 @@ function Login() {
         <img className="side" src="/assets/Login/side-pic.png" alt="side" />
       </div>
 
-      <div
-        id="notification"
-        className={`notification ${!notification.show ? "hidden" : ""}`}
-      >
-        <span className="tick">✓</span>
-        <span id="notification-text">{notification.message}</span>
-      </div>
+      {notification.show && (
+        <div id="notification" className="notification">
+          <span className="tick">✓</span>
+          <span id="notification-text">{notification.message}</span>
+        </div>
+      )}
     </div>
   );
 }
