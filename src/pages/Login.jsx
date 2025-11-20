@@ -101,9 +101,11 @@ function Login() {
               Dont have an account?
               <span onClick={() => navigate('/login')}>Sign Up</span>
             </p>
-            
-        <div className="footer">Help / Terms / Privacy</div>
           </form>
+
+          <div className="footer">Help / Terms / Privacy</div>
+        </div>
+      </div>
 
       <div className="right">
         <img className="side" src="/assets/Login/side-pic.png" alt="side" />
