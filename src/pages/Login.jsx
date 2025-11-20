@@ -103,7 +103,7 @@ function Login() {
             </p>
             
         <div className="footer">Help / Terms / Privacy</div>
-      </div>
+          </form>
 
       <div className="right">
         <img className="side" src="/assets/Login/side-pic.png" alt="side" />
