@@ -178,8 +178,8 @@
   transition: 0.18s ease;
 }
 
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label {
+.input-group input:focus+label,
+.input-group input:not(:placeholder-shown)+label {
   top: 8px;
   left: 20px;
   font-size: 14px;
@@ -270,29 +270,36 @@
   .welcome-text {
     font-size: 40px;
   }
+
   .content {
     margin-top: 80px;
   }
+
   .or {
     width: 420px;
   }
+
   .google,
   .github {
     width: 220px;
     height: 60px;
     font-size: 16px;
   }
+
   .form {
     width: 420px;
   }
+
   .input-group input {
     height: 64px;
     font-size: 16px;
   }
+
   .login-btn {
     height: 64px;
     font-size: 16px;
   }
+
   .signin-text {
     margin-top: 28px;
   }

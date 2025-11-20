@@ -130,115 +130,112 @@ function Home() {
             <p className="section-subtitle">
               See our satisfied customers </p>
 
-            
+
           </div>
           <div className="testimonials-grid">
-            <div className="testimonial-card rating-card" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
-              <div className="rating-section">
-                <div className="rating-score">4.8</div>
-                <p className="rating-description">
-                  We've delivered <span className="highlight">00+ Items</span> that
-                  help no one with anything so yeah lmao fr.
-                </p>
-                <div className="company-info">
-                  <div className="company-name">Nixun <p style={{ fontSize: '30px', position: 'absolute', top: '2650px', left: '284px' }}>©</p></div>
-                  <div className="trust-indicators">
-                    <div className="trust-avatars">
-                      <div className="trust-avatar">
-                        <img src="assets/Home/pfp 1.png" alt="Client" />
+
+            <div className="grid-column">
+              <div className="testimonial-card rating-card">
+
+                <div className="rating-top">
+                  <span className="big-score">4.8</span>
+                  <p className="rating-sub">
+                    We've delivered <span className="text-white">100+ Items</span> that help the smallest of our customers!
+                  </p>
+                </div>
+
+                <div className="rating-bottom">
+                  <div className="brand-block">
+                    <h2 className="nixun-brand">Nixun<span className="copyright">©</span></h2>
+                    <div className="trust-row">
+                      <div className="avatars-group">
+                        <img src="assets/Home/pfp 1.png" alt="" />
+                        <img src="assets/Home/pfp 2.png" alt="" />
+                        <img src="assets/Home/pfp 3.png" alt="" />
                       </div>
-                      <div className="trust-avatar">
-                        <img src="assets/Home/pfp 2.png" alt="Client" />
-                      </div>
-                      <div className="trust-avatar">
-                        <img src="assets/Home/pfp 3.png" alt="Client" />
+
+                      <div className="trust-info">
+                        <div className="purple-stars small">★★★★★</div>
+                        <p className="trusted-label">Trusted by clients worldwide</p>
                       </div>
                     </div>
-                    <div className="trust-text">Trusted by clients worldwide</div>
                   </div>
-                  <div className="star-rating">
-                    <span className="star">★</span>
-                    <span className="star">★</span>
-                    <span className="star">★</span>
-                    <span className="star">★</span>
-                    <span className="star">★</span>
-                  </div>
+                  <button className="leave-review-btn">Leave a review</button>
                 </div>
+
               </div>
-              <button className="cta-button">Leave a review</button>
             </div>
 
-            <div className="testimonial-card">
-              <div className="testimonial-header">
-                <div className="testimonial-avatar">
-                  <img src="assets/Home/pfp 2.png" alt="Jyotsna Arora" />
+            <div className="grid-column">
+              <div className="testimonial-card profile-card">
+                <div className="profile-row">
+                  <img src="assets/Home/pfp 2.png" alt="Jyotsna" className="profile-img" />
+                  <div>
+                    <h3 className="profile-name">Jyotsna Arora</h3>
+                    <p className="profile-role">Coreisus</p>
+                  </div>
                 </div>
-                <div className="testimonial-author">
-                  <div className="author-name">Jyotsna Arora</div>
-                  <div className="author-role">Coreisus</div>
-                </div>
-                <div className="three-dots">...</div>
+                <span className="dots">...</span>
               </div>
-              <div className="testimonial-content">
-                <div className="star-rating">
-                  <span className="star">★</span>
-                  <span className="star">★</span>
-                  <span className="star">★</span>
-                  <span className="star">★</span>
-                  <span className="star">★</span>
+
+              <div className="testimonial-card text-card middle-text-card">
+                <div className="card-top-row">
+                  <span className="purple-stars">★★★★★</span>
+                  <span className="dots">...</span>
                 </div>
-                <p className="testimonial-text" style={{ height: '490px' }}>
-                  Incredible Service! They delivered exactly what we didn't need,
-                  late, and under expectations.
+                <p className="review-body">
+                  I'm embarrassed I waited this long. Everything that felt monumental before now seems manageable. The clarity is startling, and frankly, a bit unfair to everyone else.
                 </p>
               </div>
             </div>
 
-            <div className="testimonial-card" style={{ height: '820px' }}>
-              <div className="testimonial-content">
-                <div className="star-rating">
-                  <span className="star">★</span>
-                  <span className="star">★</span>
-                  <span className="star">★</span>
-                  <span className="star">★</span>
-                  <span className="star">★</span>
+            <div className="grid-column">
+              <div className="testimonial-card text-card align-top">
+                <h3 className="headline-review">
+                  Incredible Service! Absolutely shrunk all the problems I had.
+                </h3>
+                <div className="card-bottom-row">
+                  <span className="purple-stars">★★★★☆</span>
+                  <span className="dots">...</span>
                 </div>
-                <p className="testimonial-text">
-                  Incredible Service! They delivered exactly what we didn't need,
-                  late, and under expectations.
-                </p>
               </div>
-              <br />
-              <div className="testimonial-header">
-                <div className="testimonial-avatar">
-                  <img src="assets/Home/pfp 1.png" alt="Jyotsna Arora" />
+
+              <div className="testimonial-card profile-card">
+                <div className="profile-row">
+                  <img src="assets/Home/pfp 1.png" alt="Aditya" className="profile-img" />
+                  <div>
+                    <h3 className="profile-name">Aditya Das</h3>
+                    <p className="profile-role">Exun Clan</p>
+                  </div>
                 </div>
-                <div className="testimonial-author">
-                  <div className="author-name">Aditya Das</div>
-                  <div className="author-role">ExunClan</div>
-                </div>
-                <div className="three-dots">...</div>
               </div>
             </div>
+
           </div>
         </section>
 
         <section className="featured-section">
-          <div className="featured-image"></div>
+          <div className="featured-image">
+            <div className="featured-image">
+              <img
+                src="/assets/Home/mine.png"
+                alt="Resource Extraction"
+              />
+              <div className="featured-overlay">WARNING: HIGH MASS</div>
+            </div>
+          </div>
           <div className="featured-content">
             <h2 className="featured-title">
-              Highlighted <span className="brand-highlight">Feature One.</span>
+              Today's Highlight: <span className="brand-highlight">Resource Extraction</span>
             </h2>
             <p className="featured-description">
-              This neutral, flexible, sans-serif typeface is the system font for
-              Apple platforms. SF Pro features nine weights, variable optical
-              sizes for optimal legibility, four widths, and includes a rounded
-              variant. SF Pro supports over 150 languages across Latin, Greek, and
-              Cyrillic scripts.
+              Standard contract for moving high-mass objects (AA Batteries, Bottle Caps, Raw Ore) from the Surface to the Catacombs. Requires a coordinated team to bypass physics constraints. Hazard pay applies for active zones.
+
             </p>
-            <button className="action-button">start hiring</button>
+            <button className="action-button">See more</button>
           </div>
         </section>
+        <div style={{ height: '2px', width: '100%' }}></div>
 
         <footer className="footer">
           <ul className="footer-links">
