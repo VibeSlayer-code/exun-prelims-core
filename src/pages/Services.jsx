@@ -1,122 +1,132 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { servicesList } from './servicesData'; 
 import './Services.css';
 
 function Services() {
-  const [modalActive, setModalActive] = useState(false);
-  const [modalTitle, setModalTitle] = useState('');
-  const [formData, setFormData] = useState({ name: '', email: '', details: '' });
+  const navigate = useNavigate();
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userImage, setUserImage] = useState(null);
+  const [userName, setUserName] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = (service) => {
-    setModalTitle(service);
-    setModalActive(true);
-  };
-
-  const closeModal = () => {
-    setModalActive(false);
-    setFormData({ name: '', email: '', details: '' });
-  };
-
-  const handleSubmit = () => {
-    if (formData.name && formData.email && formData.details) {
-      alert('Request submitted successfully!');
-      closeModal();
-    } else {
-      alert('Please fill all fields');
+  useEffect(() => {
+    document.body.style.zoom = "100%";
+    const loggedInStatus = localStorage.getItem('login') === 'true';
+    setIsLoggedIn(loggedInStatus);
+    if (loggedInStatus) {
+      setUserImage(localStorage.getItem('userImage'));
+      setUserName(localStorage.getItem('userName') || "Agent");
     }
+  }, []);
+
+  const handleSignOut = () => {
+    localStorage.clear();
+    setIsLoggedIn(false);
+    window.location.reload();
   };
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
+  const openRequestModal = () => setIsModalOpen(true);
+  const closeRequestModal = () => setIsModalOpen(false);
+
+  const handleSubmitRequest = (e) => {
+    e.preventDefault();
+    alert("Contract transmitted to the Guild.");
+    closeRequestModal();
   };
 
   return (
-    <div className="services-container">
-      <div className="container">
-        <div className="header">
-          <h1>Services Portal</h1>
-          <p>How etinuXe Generates Resources</p>
+    <div className="services-page">
+      <div className="hero-bg"></div>
+
+      <nav className="navigation-bar">
+        <div className="brand-section">
+            <div className="brand-icon">
+              <img src="assets/Global/logo.png" alt="Nixun Logo" />
+            </div>
+            <div className="brand-name">Nixun</div>
         </div>
 
-        <div className="services-grid">
-          <div className="service-card" onClick={() => openModal('Spy Services')}>
-            <h2>Spy Services</h2>
-            <p>Upload a person you're looking for. Our tiny operatives access places others can't.</p>
-            <button className="service-button">Request Service</button>
-          </div>
-
-          <div className="service-card" onClick={() => openModal('Missing Person Finder')}>
-            <h2>Missing Person Finder</h2>
-            <p>AI extracts missing people and pet rewards from newspapers and online sources.</p>
-            <button className="service-button">Search Now</button>
-          </div>
-
-          <div className="service-card" onClick={() => openModal('Pest Investigations')}>
-            <h2>Pest Investigations</h2>
-            <p>Expert extermination services. We understand pests like no one else.</p>
-            <button className="service-button">Contact</button>
-          </div>
-
-          <div className="service-card" onClick={() => openModal('Forensics Services')}>
-            <h2>Forensics Services</h2>
-            <p>Bank safes, currency notes, microdust patterns, and microprint reading specialists.</p>
-            <button className="service-button">Inquire</button>
-          </div>
-
-          <div className="service-card" onClick={() => openModal('Ore Detector')}>
-            <h2>Ore Detector</h2>
-            <p>On-hire consultants locate metal ores, gemstones, and petroleum with insect friends.</p>
-            <button className="service-button">Hire Consultant</button>
-          </div>
-
-          <div className="service-card" onClick={() => openModal('Vigilante Justice')}>
-            <h2>Vigilante Justice</h2>
-            <p>Free service - our mission to help those who can't help themselves.</p>
-            <button className="service-button">Report Case</button>
-          </div>
+        <div className="navigation-menu-container">
+            <ul className="navigation-menu">
+              <li><Link to="/" className="navigation-link">Home</Link></li>
+              <li><span className="navigation-separator">/</span></li>
+              <li><Link to="/services" className="navigation-link active">Jobs</Link></li>
+              <li><span className="navigation-separator">/</span></li>
+              <li><Link to="/search" className="navigation-link">Search</Link></li>
+              <li><span className="navigation-separator">/</span></li>
+              <li><Link to="/map" className="navigation-link">3d Map</Link></li>
+              <li><span className="navigation-separator">/</span></li>
+              <li><Link to="/library" className="navigation-link">Library</Link></li>
+            </ul>
         </div>
 
-        <Link to="/" className="back-button">← Back to Home</Link>
+        {!isLoggedIn ? (
+             <button className="login-button" onClick={() => navigate('/login')}>LOG IN</button>
+        ) : (
+            <div className="profile-pill">
+                <div className="profile-data">
+                    <img 
+                        src={userImage || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} 
+                        alt="User" 
+                        className="nav-profile-img" 
+                    />
+                    <span className="nav-username">Hi, {userName}</span>
+                </div>
+                <button className="mini-signout-btn" onClick={handleSignOut} title="Sign Out">
+                    ✕
+                </button>
+            </div>
+        )}
+      </nav>
+
+      <header className="svc-hero">
+        <h1>Explore our services</h1>
+        <p>
+          Navigate the sub-perceptual economy. We facilitate the exchange of mass for memory, 
+          offering specialized contracts for those willing to shrink their footprint to expand their reach.
+        </p>
+        <button className="svc-cta-btn" onClick={openRequestModal}>REQUEST A SERVICE</button>
+      </header>
+
+      <div className="svc-grid">
+        {servicesList.map((service, index) => (
+          <div 
+            key={service.id} 
+            className={`svc-card ${index === 0 || index === 3 || index === 4 ? 'wide-card' : ''}`}
+            onClick={() => navigate(`/service/${service.id}`)}
+          >
+            <div className="svc-card-img">
+                {service.image ? <img src={service.image} alt={service.title} /> : <div className="img-placeholder"></div>}
+                <div className="svc-overlay"></div>
+            </div>
+            
+            <div className="svc-card-footer">
+                <h3>{service.title}</h3>
+                <div className="split-pill">
+                    <span className="tag-part">{service.tag}</span>
+                    <span className="price-part">{service.price}</span>
+                </div>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div id="modal" className={`modal ${modalActive ? 'active' : ''}`}>
-        <div className="modal-content">
-          <span className="close-btn" onClick={closeModal}>×</span>
-          <h2 id="modalTitle">{modalTitle}</h2>
-          <div className="input-group">
-            <label>Name</label>
-            <input
-              type="text"
-              id="name"
-              placeholder="Enter your name"
-              value={formData.name}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="input-group">
-            <label>Email</label>
-            <input
-              type="email"
-              id="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="input-group">
-            <label>Details</label>
-            <textarea
-              id="details"
-              rows="4"
-              placeholder="Describe your requirements"
-              value={formData.details}
-              onChange={handleInputChange}
-            ></textarea>
-          </div>
-          <button className="service-button" onClick={handleSubmit}>Submit Request</button>
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={closeRequestModal}>
+            <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2>Initiate Contract</h2>
+                    <button className="close-modal-btn" onClick={closeRequestModal}>×</button>
+                </div>
+                <form className="modal-form" onSubmit={handleSubmitRequest}>
+                    <button type="submit" className="modal-submit-btn">TRANSMIT REQUEST</button>
+                </form>
+            </div>
         </div>
-      </div>
+      )}
+
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGoogleLogin } from "@react-oauth/google"; // <--- IMPORT HOOK
-import axios from "axios"; // <--- IMPORT AXIOS FOR PROFILE FETCH
+import { useNavigate, Link } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 import "./Login.css";
 
 function Login() {
@@ -22,26 +22,22 @@ function Login() {
     }, 3000);
   };
 
-  // --- GOOGLE LOGIN LOGIC ---
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setIsLoading(true);
       try {
-        // 1. Get the User's Profile Info from Google using the token
         const userInfo = await axios.get(
           'https://www.googleapis.com/oauth2/v3/userinfo',
           { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } }
         );
 
-        // 2. (Optional) Send this email to YOUR backend to register/check them
-        // const backendRes = await fetch("https://nixun-api.onrender.com/google_auth", ...)
 
-        console.log(userInfo.data); // Check console to see email/name
+        console.log(userInfo.data);
 
-        // 3. Set Login State
         localStorage.setItem("login", "true");
-        localStorage.setItem("userEmail", userInfo.data.email); // Store email if needed
-
+        localStorage.setItem("userEmail", userInfo.data.email);
+        localStorage.setItem("userImage", userInfo.data.picture);
+        localStorage.setItem("userName", userInfo.data.given_name);
         showNotification(`Welcome, ${userInfo.data.given_name}!`);
 
         setTimeout(() => {
@@ -59,7 +55,6 @@ function Login() {
       showNotification("Google Sign-In was cancelled");
     },
   });
-  // --------------------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -165,9 +160,14 @@ function Login() {
               {isLoading ? "Authenticating..." : "Sign in with email"}
             </button>
 
-            <p className="signin-text">
+            <p className="signin-text" style={{ position: 'relative', zIndex: 9999 }}>
               Don't have an account?{" "}
-              <span onClick={() => navigate('/signup')}>Sign Up</span>
+              <Link
+                to="/signup"
+                className="signup-link"
+              >
+                Sign Up
+              </Link>
             </p>
           </form>
 

@@ -6,6 +6,7 @@ import Search from './pages/Search';
 import Services from './pages/Services';
 import Knowledge from './pages/Knowledge';
 import Map from './pages/Map';
+import ServiceDetail from './pages/ServiceDetail';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/search" element={<Search />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/service/:id" element={<ServiceDetail />} />
         <Route path="/knowledge" element={<Knowledge />} />
         <Route path="/map" element={<Map />} />
       </Routes>

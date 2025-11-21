@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useGoogleLogin } from "@react-oauth/google"; // <--- ADDED
+import axios from "axios"; // <--- ADDED
 import './Signup.css';
 
 function Signup() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // <--- ADDED
   const [notification, setNotification] = useState({ show: false, message: '' });
 
   const showNotification = (message) => {
@@ -15,8 +18,45 @@ function Signup() {
     }, 3000);
   };
 
+  // --- GOOGLE LOGIN LOGIC (COPIED FROM LOGIN.JSX) ---
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsLoading(true);
+      try {
+        const userInfo = await axios.get(
+          'https://www.googleapis.com/oauth2/v3/userinfo',
+          { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } }
+        );
+
+        // Save user info just like Login.jsx
+        localStorage.setItem("login", "true");
+        localStorage.setItem("userEmail", userInfo.data.email);
+        localStorage.setItem("userImage", userInfo.data.picture);
+        localStorage.setItem("userName", userInfo.data.given_name);
+
+        showNotification(`Account created! Welcome, ${userInfo.data.given_name}!`);
+
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+
+      } catch (error) {
+        showNotification("Google Signup Failed");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onError: () => {
+      showNotification("Google Sign-Up was cancelled");
+    },
+  });
+  // --------------------------------------------------
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const data = { email, password };
     try {
       const res = await fetch('https://nixun-api.onrender.com/add_user', {
@@ -32,13 +72,15 @@ function Signup() {
         showNotification('Registration successful! Please sign in.');
 
         setTimeout(() => {
-          navigate('/');
+          navigate('/'); // Redirecting to home after signup
         }, 2000);
       } else {
         showNotification(json.message);
       }
     } catch (err) {
       showNotification('Error: ' + err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,11 +95,17 @@ function Signup() {
           </p>
 
           <div className="idk">
-            <button className="google">
+            {/* ADDED ONCLICK HANDLER HERE */}
+            <button
+              type="button"
+              className="google"
+              onClick={() => googleLogin()}
+            >
               <img src="/assets/Login/google.png" className="icon" alt="g" />
               Sign up with Google
             </button>
-            <button className="github">
+
+            <button type="button" className="github">
               <img src="/assets/Login/apple.png" className="icon" alt="gh" />
               Sign up with Apple ID
             </button>
@@ -74,6 +122,7 @@ function Signup() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
               <label htmlFor="email">Email</label>
             </div>
@@ -85,16 +134,29 @@ function Signup() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
               <label htmlFor="password">Password</label>
             </div>
 
-            <button className="login-btn" type="submit">Register</button>
+            <button
+              className="login-btn"
+              type="submit"
+              disabled={isLoading}
+              style={{ cursor: isLoading ? 'wait' : 'pointer' }}
+            >
+              {isLoading ? "Creating Account..." : "Register"}
+            </button>
 
-          <p className="signin-text">
-          Already have an account?{' '}
-          <span onClick={() => navigate('/login')}>Log In</span>
-          </p>
+            <p className="signin-text" style={{ position: 'relative', zIndex: 9999 }}>
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="signup-link"
+              >
+                Log In
+              </Link>
+            </p>
 
           </form>
         </div>
@@ -106,10 +168,12 @@ function Signup() {
         <img className="side" src="/assets/Login/side-pic.png" alt="side" />
       </div>
 
-      <div id="notification" className={`notification ${!notification.show ? 'hidden' : ''}`}>
-        <span className="tick">✓</span>
-        <span id="notification-text">{notification.message}</span>
-      </div>
+      {notification.show && (
+        <div id="notification" className="notification">
+          <span className="tick">✓</span>
+          <span id="notification-text">{notification.message}</span>
+        </div>
+      )}
     </div>
   );
 }

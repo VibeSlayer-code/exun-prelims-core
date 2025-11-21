@@ -1,3 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* MAIN CONTAINER - SAME AS LOGIN */
 .signup-container {
   height: 100vh;
   display: flex;
@@ -5,20 +18,25 @@
   background-color: #000000;
   overflow: hidden;
 
+  /* Keep your scaling fix */
   transform: scale(0.67);
   transform-origin: top left;
   width: calc(100% / 0.67);
   height: calc(100% / 0.67);
 }
 
-
+/* LEFT SIDE - FLEXBOX TO FIX CLICK ISSUES */
 .left {
   position: relative;
   width: 50%;
   height: 100%;
   background: #000000;
-  padding: 60px 80px;
+  padding: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .right {
@@ -34,26 +52,27 @@
   display: block;
 }
 
+/* LOGO - REMOVED ABSOLUTE POSITIONING */
 .logo {
   width: 45px;
   height: 43.9px;
-  position: absolute;
-  top: 95.31px;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 95.31px;
+  margin-bottom: 0;
 }
 
+/* CONTENT - REMOVED ABSOLUTE POSITIONING */
 .content {
-  position: absolute;
-  top: 296.83px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static;
   width: 100%;
   max-width: 760px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  margin-top: 80px;
+  /* Adjusted for "Create Account" height */
+  z-index: 10;
+  /* Ensures it sits on top */
 }
 
 .welcome-text {
@@ -74,6 +93,8 @@
   display: flex;
   gap: 25px;
   margin-bottom: 0;
+  z-index: 20;
+  /* Ensures buttons are clickable */
 }
 
 .google,
@@ -91,6 +112,14 @@
   gap: 15px;
   padding-left: 30px;
   cursor: pointer;
+  transition: background 0.2s ease;
+  position: relative;
+  z-index: 20;
+}
+
+.google:hover,
+.github:hover {
+  background: #444;
 }
 
 .icon {
@@ -115,6 +144,7 @@
   flex-direction: column;
   gap: 25px;
   align-items: center;
+  z-index: 20;
 }
 
 .input-group {
@@ -134,8 +164,8 @@
   color: #fff;
 }
 
-.input-group input::placeholder {
-  color: #ccc;
+.input-group input:focus {
+  border: 1px solid #555;
 }
 
 .input-group label {
@@ -148,8 +178,8 @@
   transition: 0.18s ease;
 }
 
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label {
+.input-group input:focus+label,
+.input-group input:not(:placeholder-shown)+label {
   top: 8px;
   left: 20px;
   font-size: 14px;
@@ -165,37 +195,52 @@
   border: 1px solid #555;
   font-size: 20px;
   cursor: pointer;
+  transition: background 0.2s ease;
+  position: relative;
+  z-index: 20;
 }
 
+.login-btn:hover {
+  background: #444;
+}
+
+/* LINKS */
 .signin-text {
   width: 100%;
   text-align: center;
   font-size: 20px;
   color: #ccc;
-  margin-top: 66.15px;
-  margin-bottom: 263.71px;
+  margin-top: 44.3px;
   display: block;
-  align-self: flex-end;
+  align-self: center;
+  position: relative !important;
+  z-index: 9999 !important;
+  pointer-events: auto;
 }
 
-.signin-text span {
-  color: #8654d8;
+.signup-link {
+  color: #8654d8 !important;
   font-weight: 600;
-  cursor: pointer;
+  cursor: pointer !important;
   text-decoration: underline;
+  position: relative;
+  z-index: 10000;
+}
+
+.signup-link:hover {
+  color: #9a6ee8 !important;
 }
 
 .footer {
-  position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: auto;
   font-size: 16px;
   color: #ccc;
   text-align: center;
   white-space: nowrap;
+  padding-bottom: 28px;
 }
 
+/* NOTIFICATION */
 .notification {
   position: fixed;
   top: 20px;
@@ -207,15 +252,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  z-index: 1000;
+  z-index: 9999;
+  /* Ensure notification is on top */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: opacity 0.3s ease-in-out;
   border: 1px solid #555;
-}
-
-.notification.hidden {
-  opacity: 0;
-  pointer-events: none;
 }
 
 .tick {
@@ -227,27 +267,37 @@
   .welcome-text {
     font-size: 40px;
   }
+
   .content {
-    top: 220px;
+    margin-top: 80px;
   }
+
   .or {
     width: 420px;
   }
+
   .google,
   .github {
     width: 220px;
     height: 60px;
     font-size: 16px;
   }
+
   .form {
     width: 420px;
   }
+
   .input-group input {
     height: 64px;
     font-size: 16px;
   }
+
   .login-btn {
     height: 64px;
     font-size: 16px;
+  }
+
+  .signin-text {
+    margin-top: 28px;
   }
 }

@@ -450,6 +450,8 @@ html {
   margin-left: 5px;
 }
 
+
+
 .leave-review-btn {
   background: #8654d8;
   color: white;
@@ -513,9 +515,9 @@ html {
   height: 40px;
   border-radius: 50%;
   border: 2px solid #0F0F0F;
-  /* Creates the overlap cutout effect */
+
   margin-right: -15px;
-  /* Overlap */
+
 }
 
 .trust-info {
@@ -614,7 +616,6 @@ html {
 
   .text-card {
     height: 400px;
-    /* Give them height on mobile */
   }
 }
 
@@ -829,106 +830,206 @@ html {
   font-weight: bold;
 }
 
+
 .reviews-container {
-  display: flex;
-  gap: 30px;
-  justify-content: center;
-  align-items: flex-end;
-  padding: 60px 0;
+  padding: 150px 0;
+  height: auto;
+  overflow: visible;
 }
+
 
 .review-card {
-  width: 430px;
-  height: 590px;
+  width: 340px;
+  height: 520px;
   background: #8D50F3;
-  border-radius: 20px;
-  padding: 30px;
+  color: #000;
+  border-radius: 30px;
+  padding: 35px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  color: #000;
-  font-family: sans-serif;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  position: relative;
-  overflow: hidden;
+  justify-content: flex-end;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+
+
 
 .tilt1 {
-  transform: rotate(5deg) translateY(20px);
+  transform: rotate(-8deg) translateY(40px);
+  z-index: 1;
+  background: #8D50F3;
 }
+
 
 .tilt2 {
-  transform: rotate(-8deg) translateY(10px);
-  margin-left: -60px;
-  background-color: #A079DF;
+  transform: rotate(4deg) translateY(0px);
+  z-index: 2;
+  margin-left: -50px;
+
+  background: #9B6FE0;
 }
+
 
 .tilt3 {
-  transform: rotate(5deg) translateY(10px);
-  margin-left: -60px;
-  background-color: #5D2CAE;
+  transform: rotate(-4deg) translateY(10px);
+  z-index: 3;
+  margin-left: -50px;
+
+  background: #7A3ED0;
 }
+
 
 .tilt4 {
-  transform: rotate(-7deg) translateY(20px);
-  margin-left: -60px;
-  background-color: #8654D8;
+  transform: rotate(8deg) translateY(40px);
+  z-index: 4;
+  margin-left: -50px;
+
+  background: #692FC0;
 }
 
-.review-content {
+
+.tilt1 {
+  background: #8D50F3 !important;
+}
+
+
+.tilt2 {
+  background: #9F6EE5 !important;
+}
+
+
+.tilt3 {
+  background: #7B3DD6 !important;
+}
+
+
+.tilt4 {
+  background: #682CC4 !important;
+}
+
+
+
+
+
+.reviews-container {
+  display: flex !important;
+
+  flex-direction: row !important;
+
+  justify-content: center;
+  align-items: center;
+  padding: 150px 0;
+  height: auto;
+  width: 100%;
+  overflow: visible;
+}
+
+
+.review-card {
+  width: 340px;
+  height: 520px;
+  background: #8D50F3;
+  color: #000;
+  border-radius: 30px;
+  padding: 35px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  justify-content: flex-end;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+
 }
+
+
+.review-card:hover {
+  transform: translateY(-20px) rotate(0deg) scale(1.05) !important;
+
+  z-index: 100;
+  box-shadow: 0 40px 80px rgba(134, 84, 216, 0.5);
+  margin: 0 40px;
+
+}
+
+.card-arrow {
+
+  position: absolute;
+  top: 35px;
+  right: 35px;
+
+
+  font-size: 48px;
+
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.6);
+
+
+
+
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 20;
+
+}
+
+
+.review-card:hover .card-arrow {
+
+  transform: translate(15px, -15px) scale(1.2);
+
+
+  color: #000000;
+}
+
 
 .review-title {
-  font-size: 38px;
-  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -3px;
+  margin-bottom: 25px;
   color: #000;
-  line-height: 1.1;
+  text-transform: none;
+
 }
 
+
 .review-list {
-  list-style: none;
-  margin: 0;
+  list-style: none !important;
+
   padding: 0;
+  margin: 0;
 }
 
 .review-list li {
-  font-size: 20px;
-  color: #000;
-  margin-bottom: 14px;
-  padding-left: 28px;
-  position: relative;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+
   font-weight: 500;
+  color: rgba(0, 0, 0, 0.75);
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.3;
 }
+
 
 .review-list li::before {
-  content: "→";
+  content: "•";
   position: absolute;
   left: 0;
-  top: 0;
+  top: -2px;
   color: #000;
-  font-size: 22px;
-}
-
-.review-button {
-  margin-top: auto;
-  width: 100%;
-  background: #000;
-  color: #fff;
-  padding: 18px 0;
-  border: none;
-  border-radius: 18px;
   font-size: 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.review-button:hover {
-  background: #1a1a1a;
-  transform: translateY(-2px);
+  line-height: 1;
 }
 
 @media (max-width: 1600px) {
@@ -965,8 +1066,13 @@ html {
   }
 
   .hero-subtitle {
-    max-width: 100%;
-    margin-top: 40px;
+    max-width: 800px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    font-size: 1.1rem;
+    line-height: 1.5;
   }
 
   .service-card {
@@ -1033,4 +1139,63 @@ html {
     color: #ffffff;
     margin-bottom: 30px;
   }
+}
+
+.profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 10px 8px 24px;
+  border-radius: 100px;
+  transition: all 0.3s ease;
+}
+
+.profile-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(134, 84, 216, 0.5);
+}
+
+.profile-data {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-profile-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-username {
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.mini-signout-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  color: rgba(255, 255, 255, 0.5);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.mini-signout-btn:hover {
+  background: #d85454;
+  color: white;
+  transform: rotate(90deg);
 }
