@@ -200,7 +200,7 @@ function Home() {
                       </div>
                     </div>
                   </div>
-                  <button className="leave-review-btn">Leave a review</button>
+                
                 </div>
 
               </div>
