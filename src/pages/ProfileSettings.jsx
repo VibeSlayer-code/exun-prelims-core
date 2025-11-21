@@ -98,7 +98,7 @@ function ProfileSettings() {
     const btn = e.currentTarget;
     btn.disabled = true;
     const originalContent = btn.innerHTML;
-    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg> Saved!`;
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Saved!`;
     btn.style.backgroundColor = "#10b981";
     setTimeout(() => {
       btn.innerHTML = originalContent;
@@ -108,14 +108,14 @@ function ProfileSettings() {
   };
 
   const resetForm = () => {
-    if (confirm("Are you sure you want to reset all changes?")) {
+    if (window.confirm("Are you sure you want to reset all changes?")) {
       localStorage.removeItem("profileData");
       window.location.reload();
     }
   };
 
   const logout = () => {
-    if (confirm("Are you sure you want to log out?")) {
+    if (window.confirm("Are you sure you want to log out?")) {
       localStorage.clear();
       navigate("/");
     }
@@ -171,17 +171,17 @@ function ProfileSettings() {
           </button>
         </div>
       </div>
+
       <div className="settings-section">
         <div className="section-title">
           <svg
-            width="22"
-            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
           >
-            <path d="M18 21v-6a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v6m18 0v-6a3 3 0 0 0-3-3h-3.3a3 3 0 0 0-2.7 1.7L14.7 18m2.6 0h3.3a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h3.3a3 3 0 0 0 2.7-1.7L9.3 18m2.6 0H18" />
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
           </svg>
           Profile Picture
         </div>
@@ -226,8 +226,6 @@ function ProfileSettings() {
                 }
               >
                 <svg
-                  width="16"
-                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -242,8 +240,6 @@ function ProfileSettings() {
                 onClick={removeProfilePic}
               >
                 <svg
-                  width="16"
-                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -258,18 +254,18 @@ function ProfileSettings() {
           </div>
         </div>
       </div>
+
       <div className="settings-section">
         <div className="section-title">
           <svg
-            width="22"
-            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
           >
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <polyline points="13 8 13 12 16 12"></polyline>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
           </svg>
           Banner
         </div>
@@ -288,28 +284,18 @@ function ProfileSettings() {
           {!profileData.banner && (
             <div className="banner-placeholder">
               <svg
-                width="48"
-                height="48"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
               >
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <polyline points="13 8 13 12 16 12"></polyline>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
               </svg>
               <span>Click to upload banner image</span>
-              <span style={{ fontSize: "13px", color: "#666" }}>
-                Recommended: 1200x300px
-              </span>
+              <span>Recommended: 1200x300px</span>
             </div>
-          )}
-          {profileData.banner && (
-            <img
-              src={profileData.banner}
-              className="banner-preview"
-              alt="Banner"
-            />
           )}
         </div>
         <div className="settings-form-group">
@@ -335,19 +321,18 @@ function ProfileSettings() {
           </div>
         </div>
       </div>
+
       <div className="settings-section">
         <div className="section-title">
           <svg
-            width="22"
-            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
           >
             <circle cx="12" cy="12" r="10"></circle>
-            <line x1="15" y1="9" x2="9" y2="9"></line>
-            <line x1="9" y1="15" x2="15" y2="15"></line>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
           </svg>
           Basic Information
         </div>
@@ -400,11 +385,10 @@ function ProfileSettings() {
           ></textarea>
         </div>
       </div>
+
       <div className="settings-section">
         <div className="section-title">
           <svg
-            width="22"
-            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -423,8 +407,6 @@ function ProfileSettings() {
                 <span>{skill}</span>
                 <button onClick={() => removeSkill(skill)}>
                   <svg
-                    width="16"
-                    height="16"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -446,11 +428,10 @@ function ProfileSettings() {
           </div>
         </div>
       </div>
+
       <div className="settings-save-section">
         <button className="settings-btn btn-secondary" onClick={resetForm}>
           <svg
-            width="16"
-            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -463,8 +444,6 @@ function ProfileSettings() {
         </button>
         <button className="settings-btn btn-primary" onClick={saveProfile}>
           <svg
-            width="16"
-            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
