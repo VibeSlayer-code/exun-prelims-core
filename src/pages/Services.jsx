@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import emailjs from '@emailjs/browser'; // Import EmailJS
+import emailjs from '@emailjs/browser';
 import { servicesList } from './servicesData'; 
 import './Services.css';
 
 function Services() {
   const navigate = useNavigate();
   
-  // --- USER STATE ---
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userImage, setUserImage] = useState(null);
   const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState(""); // Need email to send to
+  const [userEmail, setUserEmail] = useState("");
   
-  // --- MODAL & FORM STATE ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [massValue, setMassValue] = useState(5);
   const [targetObject, setTargetObject] = useState("");
@@ -28,7 +26,7 @@ function Services() {
     if (loggedInStatus) {
       setUserImage(localStorage.getItem('userImage'));
       setUserName(localStorage.getItem('userName') || "Agent");
-      setUserEmail(localStorage.getItem('userEmail')); // Get the email
+      setUserEmail(localStorage.getItem('userEmail'));
     }
   }, []);
 
@@ -38,11 +36,10 @@ function Services() {
     window.location.reload();
   };
 
-  // --- FORM HANDLERS ---
   const toggleHazard = (hazard) => {
     setSelectedHazards(prev => ({
         ...prev,
-        [hazard]: !prev[hazard] // Toggle true/false
+        [hazard]: !prev[hazard]
     }));
   };
 
@@ -66,7 +63,6 @@ function Services() {
         to_name: userName,
         service_name: "CUSTOM MISSION ARCHITECT",
         cost: `$${estimatedCost}`,
-        
         specifications: `
           TARGET: ${targetObject}
           MASS: ${massValue} grams
@@ -85,7 +81,6 @@ function Services() {
     .then(() => {
         alert(`MISSION UPLOADED.\n\nTarget: ${targetObject}\nCost: $${estimatedCost}\n\nBriefing sent to ${userEmail}`);
         closeRequestModal();
-        // Reset form
         setTargetObject("");
         setMassValue(5);
         setSelectedHazards({});

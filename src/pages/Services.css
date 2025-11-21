@@ -556,7 +556,6 @@ html, body {
 }
 .mini-signout-btn:hover { background: #d85454; color: white; }
 
-/* --- RANGE SLIDER --- */
 .range-slider {
     width: 100%;
     -webkit-appearance: none;
@@ -587,7 +586,6 @@ html, body {
     letter-spacing: 1px;
 }
 
-/* --- HAZARD GRID --- */
 .hazard-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -611,7 +609,6 @@ html, body {
 .hazard-checkbox input { width: auto; margin: 0; } /* Reset default input style */
 .hazard-checkbox label { margin: 0; cursor: pointer; color: #aaa; }
 
-/* --- SQUAD ESTIMATOR BOX --- */
 .squad-estimator {
     background: rgba(134, 84, 216, 0.1);
     border: 1px solid rgba(134, 84, 216, 0.3);

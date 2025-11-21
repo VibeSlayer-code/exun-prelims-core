@@ -175,12 +175,7 @@ function ServiceDetail() {
                     <div className="action-area">
                         <p className="review-link" onClick={() => setIsReviewOpen(true)}>LEAVE A REVIEW</p>
                         <div className="button-stack">
-                            <button 
-                                className="outline-btn" 
-                                onClick={() => setIsVideoOpen(true)}
-                            >
-                                Speak with person
-                            </button>
+                            <button className="outline-btn" onClick={() => setIsVideoOpen(true)}>Speak with person</button>
                             <button className="book-btn" onClick={handleBookService}>Book Service</button>
                         </div>
                     </div>
@@ -217,7 +212,8 @@ function ServiceDetail() {
                 />
             )}
 
-        </div> // <--- This is the end of the "detail-page" div
+        </div>
     );
 }
+
 export default ServiceDetail;
