@@ -17,6 +17,8 @@ function Search() {
   const [copiedMessages, setCopiedMessages] = useState(new Set());
   const [placeholder, setPlaceholder] = useState("");
   const [isChangingPlaceholder, setIsChangingPlaceholder] = useState(false);
+  const [typedGreeting, setTypedGreeting] = useState("");
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -50,6 +52,27 @@ function Search() {
       setConversations(JSON.parse(savedConversations));
     }
   }, []);
+
+  useEffect(() => {
+    if (messages.length === 0) {
+      const fullGreeting = `${getGreeting()}, ${userName || "etinuxE"}.`;
+      let currentIndex = 0;
+      setTypedGreeting("");
+      setIsTypingComplete(false);
+
+      const typingInterval = setInterval(() => {
+        if (currentIndex < fullGreeting.length) {
+          setTypedGreeting(fullGreeting.substring(0, currentIndex + 1));
+          currentIndex++;
+        } else {
+          setIsTypingComplete(true);
+          clearInterval(typingInterval);
+        }
+      }, 50);
+
+      return () => clearInterval(typingInterval);
+    }
+  }, [messages.length, userName]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -490,8 +513,12 @@ Keep your response brief and practical.`;
               <>
                 <div className="greeting">
                   <h1>
-                    {getGreeting()},{" "}
-                    <span className="highlight">{userName || "etinuxE"}.</span>
+                    {typedGreeting.split(userName || "etinuxE")[0]}
+                    <span className="highlight">
+                      {userName || "etinuxE"}
+                      {typedGreeting.includes((userName || "etinuxE") + ".") && "."}
+                    </span>
+                    {!isTypingComplete && <span className="typing-cursor"></span>}
                   </h1>
                   <p>converting medical research to the scale of 1cm beings</p>
                 </div>
