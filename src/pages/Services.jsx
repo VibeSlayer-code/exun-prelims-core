@@ -49,7 +49,6 @@ function Services() {
   const openRequestModal = () => setIsModalOpen(true);
   const closeRequestModal = () => setIsModalOpen(false);
 
-  // --- SEND EMAIL FUNCTION ---
   const handleSubmitRequest = (e) => {
     e.preventDefault();
 
@@ -58,19 +57,16 @@ function Services() {
         return;
     }
 
-    // 1. Calculate Data
     const squadSize = Math.ceil(massValue / 5);
     const estimatedCost = 10 + (massValue * 5);
     const hazardsList = Object.keys(selectedHazards).filter(k => selectedHazards[k]).join(', ') || "None";
 
-    // 2. Prepare Email Params
     const templateParams = {
         to_email: userEmail,
         to_name: userName,
-        service_name: "CUSTOM MISSION ARCHITECT", // Special Title
+        service_name: "CUSTOM MISSION ARCHITECT",
         cost: `$${estimatedCost}`,
         
-        // Combine all the physics data into one block
         specifications: `
           TARGET: ${targetObject}
           MASS: ${massValue} grams
@@ -80,13 +76,11 @@ function Services() {
         `
     };
 
-    // 3. Send via EmailJS
-    // REPLACE THESE WITH YOUR REAL KEYS!
     emailjs.send(
-        'service_jtc96ia',      // <--- PASTE SERVICE ID
-        'template_gfukewt', // <--- PASTE BOOKING TEMPLATE ID
+        'service_jtc96ia',     
+        'template_gfukewt',
         templateParams, 
-        'c7IUhteuvXVvMlGqF'       // <--- PASTE PUBLIC KEY
+        'c7IUhteuvXVvMlGqF' 
     )
     .then(() => {
         alert(`MISSION UPLOADED.\n\nTarget: ${targetObject}\nCost: $${estimatedCost}\n\nBriefing sent to ${userEmail}`);
@@ -158,7 +152,7 @@ function Services() {
         {servicesList.map((service, index) => (
           <div 
             key={service.id} 
-            className={`svc-card ${index === 0 || index === 3 || index === 6 ? 'wide-card' : ''}`}
+            className={`svc-card ${index === 0 || index === 3 || index === 4 ? 'wide-card' : ''}`}
             onClick={() => navigate(`/service/${service.id}`)}
           >
             <div className="svc-card-img">
@@ -177,7 +171,6 @@ function Services() {
         ))}
       </div>
 
-      {/* --- MISSION ARCHITECT MODAL --- */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeRequestModal}>
             <div className="modal-container" onClick={(e) => e.stopPropagation()}>
@@ -188,7 +181,6 @@ function Services() {
                 
                 <form className="modal-form" onSubmit={handleSubmitRequest}>
                     
-                    {/* 1. THE PROBLEM */}
                     <div className="form-group">
                         <label>Target Object / Obstacle</label>
                         <input 
@@ -200,7 +192,6 @@ function Services() {
                         />
                     </div>
 
-                    {/* 2. THE PHYSICS SLIDER */}
                     <div className="form-group">
                         <label style={{display:'flex', justifyContent:'space-between'}}>
                             <span>Estimated Mass</span>
@@ -221,7 +212,6 @@ function Services() {
                         </div>
                     </div>
 
-                    {/* 3. HAZARD TOGGLES */}
                     <div className="form-group">
                         <label>Environmental Hazards</label>
                         <div className="hazard-grid">
@@ -230,7 +220,7 @@ function Services() {
                                     <input 
                                         type="checkbox" 
                                         checked={!!selectedHazards[h]} 
-                                        readOnly // Controlled by div click
+                                        readOnly 
                                     />
                                     <label>{h}</label>
                                 </div>
@@ -238,7 +228,6 @@ function Services() {
                         </div>
                     </div>
 
-                    {/* 4. DYNAMIC SQUAD CALCULATION */}
                     <div className="squad-estimator">
                         <div className="est-row">
                             <span>Required Operatives:</span>
