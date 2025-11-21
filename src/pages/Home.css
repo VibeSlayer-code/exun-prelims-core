@@ -10,7 +10,11 @@ html {
   color: #ffffff;
   overflow-x: hidden;
   position: relative;
+<<<<<<< HEAD
   zoom: 100%;
+=======
+  zoom:  100%;
+>>>>>>> fdc481ec6a6a70bbf3eeb2dd1aef93398938ff3a
   min-height: 100vh;
 }
 
