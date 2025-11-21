@@ -17,8 +17,8 @@ function Search() {
   const [copiedMessages, setCopiedMessages] = useState(new Set());
   const [placeholder, setPlaceholder] = useState("");
   const [isChangingPlaceholder, setIsChangingPlaceholder] = useState(false);
-  const [typedGreeting, setTypedGreeting] = useState("");
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
+  const [displayedText, setDisplayedText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -39,6 +39,13 @@ function Search() {
     "Fluid replacement therapy at nano-volumes",
   ];
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
   useEffect(() => {
     const loggedInStatus = localStorage.getItem("login") === "true";
     setIsLoggedIn(loggedInStatus);
@@ -55,18 +62,18 @@ function Search() {
 
   useEffect(() => {
     if (messages.length === 0) {
-      const fullGreeting = `${getGreeting()}, ${userName || "etinuxE"}.`;
-      let currentIndex = 0;
-      setTypedGreeting("");
-      setIsTypingComplete(false);
+      const fullText = `${getGreeting()}, ${userName || "etinuxE"}.`;
+      let index = 0;
+      setDisplayedText("");
+      setShowCursor(true);
 
       const typingInterval = setInterval(() => {
-        if (currentIndex < fullGreeting.length) {
-          setTypedGreeting(fullGreeting.substring(0, currentIndex + 1));
-          currentIndex++;
+        if (index < fullText.length) {
+          setDisplayedText(fullText.slice(0, index + 1));
+          index++;
         } else {
-          setIsTypingComplete(true);
           clearInterval(typingInterval);
+          setTimeout(() => setShowCursor(false), 500);
         }
       }, 50);
 
@@ -93,13 +100,6 @@ function Search() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
   };
 
   const handleSignOut = () => {
@@ -314,6 +314,35 @@ Keep your response brief and practical.`;
     });
   };
 
+  const renderGreeting = () => {
+    const greeting = getGreeting();
+    const name = userName || "etinuxE";
+    const comma = ", ";
+    const period = ".";
+    
+    if (displayedText.length === 0) return null;
+    
+    const greetingEnd = greeting.length;
+    const commaEnd = greetingEnd + comma.length;
+    const nameEnd = commaEnd + name.length;
+    const periodEnd = nameEnd + period.length;
+    
+    const greetingPart = displayedText.substring(0, Math.min(displayedText.length, greetingEnd));
+    const commaPart = displayedText.length > greetingEnd ? displayedText.substring(greetingEnd, Math.min(displayedText.length, commaEnd)) : "";
+    const namePart = displayedText.length > commaEnd ? displayedText.substring(commaEnd, Math.min(displayedText.length, nameEnd)) : "";
+    const periodPart = displayedText.length > nameEnd ? displayedText.substring(nameEnd, Math.min(displayedText.length, periodEnd)) : "";
+    
+    return (
+      <>
+        {greetingPart}
+        {commaPart}
+        {namePart && <span className="highlight">{namePart}</span>}
+        {periodPart}
+        {showCursor && <span className="typing-cursor"></span>}
+      </>
+    );
+  };
+
   const suggestionCards = [
     "How do I perform heart surgery on a tiny human?",
     "Calculate ibuprofen dosage for a 0.03 feet tall man.",
@@ -512,14 +541,7 @@ Keep your response brief and practical.`;
             {messages.length === 0 ? (
               <>
                 <div className="greeting">
-                  <h1>
-                    {typedGreeting.split(userName || "etinuxE")[0]}
-                    <span className="highlight">
-                      {userName || "etinuxE"}
-                      {typedGreeting.includes((userName || "etinuxE") + ".") && "."}
-                    </span>
-                    {!isTypingComplete && <span className="typing-cursor"></span>}
-                  </h1>
+                  <h1>{renderGreeting()}</h1>
                   <p>converting medical research to the scale of 1cm beings</p>
                 </div>
 
