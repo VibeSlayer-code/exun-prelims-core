@@ -840,10 +840,15 @@ html {
 
 
 .reviews-container {
-  padding: 150px 0;
-  height: auto;
-  overflow: visible;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow-x: visible;
+    display: flex;
+    justify-content: center;
 }
+
 
 
 .review-card {
@@ -861,6 +866,7 @@ html {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transform-origin: center;
 }
 
 
