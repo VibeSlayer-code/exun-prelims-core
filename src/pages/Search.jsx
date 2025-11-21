@@ -20,11 +20,9 @@ function Search() {
   const [showCursor, setShowCursor] = useState(true);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
-
   const API_KEY = "AIzaSyD8AEu0nUoyAlrBnqXoniZFcRlk9XOl_3o";
   const API_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
-
   const randomQueries = [
     "What's the lethal dose of caffeine for a 1cm human?",
     "How to perform CPR on someone 0.4 inches tall?",
@@ -37,14 +35,12 @@ function Search() {
     "Anesthesia protocols for micro-surgery",
     "Fluid replacement therapy at nano-volumes",
   ];
-
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good morning";
     if (hour < 18) return "Good afternoon";
     return "Good evening";
   };
-
   useEffect(() => {
     const loggedInStatus = localStorage.getItem("login") === "true";
     setIsLoggedIn(loggedInStatus);
@@ -52,20 +48,17 @@ function Search() {
       setUserImage(localStorage.getItem("userImage"));
       setUserName(localStorage.getItem("userName") || "Agent");
     }
-
     const savedConversations = localStorage.getItem("conversations");
     if (savedConversations) {
       setConversations(JSON.parse(savedConversations));
     }
   }, []);
-
   useEffect(() => {
     if (messages.length === 0) {
       const fullText = `${getGreeting()}, ${userName || "etinuxE"}.`;
       let index = 0;
       setDisplayedText("");
       setShowCursor(true);
-
       const typingInterval = setInterval(() => {
         if (index < fullText.length) {
           setDisplayedText(fullText.slice(0, index + 1));
@@ -75,11 +68,9 @@ function Search() {
           setTimeout(() => setShowCursor(false), 500);
         }
       }, 50);
-
       return () => clearInterval(typingInterval);
     }
   }, [messages.length, userName]);
-
   useEffect(() => {
     const interval = setInterval(() => {
       setIsChangingPlaceholder(true);
@@ -89,24 +80,19 @@ function Search() {
         setIsChangingPlaceholder(false);
       }, 300);
     }, 5000);
-
     return () => clearInterval(interval);
   }, []);
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
   const handleSignOut = () => {
     localStorage.clear();
     setIsLoggedIn(false);
     window.location.reload();
   };
-
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -118,7 +104,6 @@ function Search() {
       reader.readAsDataURL(file);
     }
   };
-
   const clearImage = () => {
     setSelectedImage(null);
     setImagePreview(null);
@@ -126,31 +111,26 @@ function Search() {
       fileInputRef.current.value = "";
     }
   };
-
   const saveConversation = (convId, newMessages) => {
     const updatedConversations = [...conversations];
     const existingIndex = updatedConversations.findIndex(
       (c) => c.id === convId
     );
-
     const conversationData = {
       id: convId,
       title: newMessages[0]?.content.substring(0, 50) || "New Conversation",
       messages: newMessages,
       timestamp: Date.now(),
     };
-
     if (existingIndex >= 0) {
       updatedConversations[existingIndex] = conversationData;
     } else {
       updatedConversations.unshift(conversationData);
     }
-
     const limitedConversations = updatedConversations.slice(0, 20);
     setConversations(limitedConversations);
     localStorage.setItem("conversations", JSON.stringify(limitedConversations));
   };
-
   const copyToClipboard = async (text, messageTimestamp) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -166,13 +146,10 @@ function Search() {
       console.error("Failed to copy: ", err);
     }
   };
-
   const handleSearch = async (searchQuery = query) => {
     if (!searchQuery.trim()) return;
-
     const convId = currentConvId || Date.now().toString();
     if (!currentConvId) setCurrentConvId(convId);
-
     const userMessage = {
       role: "user",
       content: searchQuery,
@@ -183,7 +160,6 @@ function Search() {
     setMessages(newMessages);
     setQuery("");
     setLoading(true);
-
     //this is the image sending logic
     let imagePart = null;
     if (imagePreview) {
@@ -196,30 +172,20 @@ function Search() {
         },
       };
     }
-
     clearImage();
-
     const systemPrompt = `Dr. Tai Ni, a world-class researcher and acclaimed innovator from Nuxeland, stood at the forefront of miniature sciences. With his latest ventures and discoveries in shrinking the human body, his work was sensational — yet not a sensation to which the public paid much heed. All his lab rats were successfully shrunk, almost invisibly small. His brother, Fhu, called his discovery a failure; Dr. Ni called it proof — proof that required closer inspection, something that most were not willing to offer. The public outrage forced Ni to go underground; his notes remain the only remnants of his findings.
-
 In the catacombs beneath Nuxeland, Ni's former test subjects formed a network of reformists called etinuxE. Their greatest achievement? The ability to shrink people.
-
 You are helping the etinuXe community - humans shrunk to 1cm tall.
-
 IMPORTANT: Provide long, detailed answers which are clear not just general guidelines but really specific based on research studies(USE online and research studies in your database) (13-15 sentences max). Use plain text only - NO markdown formatting like ** for bold or ## for headers.
-
 Convert this query from human to tiny human scale (1cm, ~0.1g body mass):`;
-
     const considerText = `
-
 Consider:
 - Dosage calculations (scale by body mass)
 - Equipment adaptations
 - Safety considerations
 - Metabolic changes
 - it should be medically accurate and impressive
-
 Keep your response brief and practical.`;
-
     let parts = [
       { text: systemPrompt },
       { text: searchQuery },
@@ -228,7 +194,6 @@ Keep your response brief and practical.`;
     if (imagePart) {
       parts.splice(2, 0, imagePart);
     }
-
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -244,9 +209,7 @@ Keep your response brief and practical.`;
           ],
         }),
       });
-
       const data = await response.json();
-
       if (data.candidates && data.candidates[0].content) {
         const answer = data.candidates[0].content.parts[0].text;
         const aiMessage = {
@@ -273,7 +236,6 @@ Keep your response brief and practical.`;
       setLoading(false);
     }
   };
-
   const handleNewQuery = () => {
     setMessages([]);
     setQuery("");
@@ -281,30 +243,25 @@ Keep your response brief and practical.`;
     clearImage();
     setCopiedMessages(new Set());
   };
-
   const handleRandomQuery = () => {
     const randomQuery =
       randomQueries[Math.floor(Math.random() * randomQueries.length)];
     setQuery(randomQuery);
   };
-
   const loadConversation = (conv) => {
     setMessages(conv.messages);
     setCurrentConvId(conv.id);
     setCopiedMessages(new Set());
   };
-
   const handleSuggestionClick = (suggestion) => {
     handleSearch(suggestion);
   };
-
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSearch();
     }
   };
-
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString("en-US", {
@@ -312,25 +269,24 @@ Keep your response brief and practical.`;
       minute: "2-digit",
     });
   };
-
   const renderGreeting = () => {
     const greeting = getGreeting();
     const name = userName || "etinuxE";
     const comma = ", ";
     const period = ".";
-    
+   
     if (displayedText.length === 0) return null;
-    
+   
     const greetingEnd = greeting.length;
     const commaEnd = greetingEnd + comma.length;
     const nameEnd = commaEnd + name.length;
     const periodEnd = nameEnd + period.length;
-    
+   
     const greetingPart = displayedText.substring(0, Math.min(displayedText.length, greetingEnd));
     const commaPart = displayedText.length > greetingEnd ? displayedText.substring(greetingEnd, Math.min(displayedText.length, commaEnd)) : "";
     const namePart = displayedText.length > commaEnd ? displayedText.substring(commaEnd, Math.min(displayedText.length, nameEnd)) : "";
     const periodPart = displayedText.length > nameEnd ? displayedText.substring(nameEnd, Math.min(displayedText.length, periodEnd)) : "";
-    
+   
     return (
       <>
         {greetingPart}
@@ -341,13 +297,11 @@ Keep your response brief and practical.`;
       </>
     );
   };
-
   const suggestionCards = [
     "How do I perform heart surgery on a tiny human?",
     "Calculate ibuprofen dosage for a 0.03 feet tall man.",
     "What are the effects caused by long-term miniaturization?",
   ];
-
   const CopyIcon = () => (
     <svg
       width="16"
@@ -363,7 +317,6 @@ Keep your response brief and practical.`;
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
     </svg>
   );
-
   const CheckIcon = () => (
     <svg
       width="16"
@@ -378,7 +331,6 @@ Keep your response brief and practical.`;
       <polyline points="20 6 9 17 4 12"></polyline>
     </svg>
   );
-
   return (
     <div className="search-page">
       <nav className="navigation-bar">
@@ -388,7 +340,6 @@ Keep your response brief and practical.`;
           </div>
           <div className="nixun-name">Nixun</div>
         </div>
-
         <div className="navigation-menu-container">
           <ul className="navigation-menu">
             <li>
@@ -430,7 +381,6 @@ Keep your response brief and practical.`;
             </li>
           </ul>
         </div>
-
         {!isLoggedIn ? (
           <button className="login-button" onClick={() => navigate("/login")}>
             LOG IN
@@ -458,7 +408,6 @@ Keep your response brief and practical.`;
           </div>
         )}
       </nav>
-
       <div className="content-card">
         <div className="sidebar">
           <div className="sidebar-card">
@@ -479,7 +428,6 @@ Keep your response brief and practical.`;
               </svg>
               New Query
             </button>
-
             <button className="query-option">
               <svg
                 width="16"
@@ -496,7 +444,6 @@ Keep your response brief and practical.`;
               </svg>
               Dr. Tai Ni's Digitized Notes
             </button>
-
             <button className="query-option" onClick={handleRandomQuery}>
               <svg
                 width="16"
@@ -514,7 +461,6 @@ Keep your response brief and practical.`;
               Create Random Query
             </button>
           </div>
-
           <div className="sidebar-card">
             <div className="recents-title">Recents</div>
             {conversations.length === 0 ? (
@@ -534,7 +480,6 @@ Keep your response brief and practical.`;
             )}
           </div>
         </div>
-
         <div className="main-content">
           <div className="chat-area">
             {messages.length === 0 ? (
@@ -543,7 +488,6 @@ Keep your response brief and practical.`;
                   <h1>{renderGreeting()}</h1>
                   <p>converting medical research to the scale of 1cm beings</p>
                 </div>
-
                 <div className="suggestion-cards">
                   {suggestionCards.map((suggestion, index) => (
                     <div
@@ -622,7 +566,6 @@ Keep your response brief and practical.`;
               </div>
             )}
           </div>
-
           <div className="input-section">
             {imagePreview && (
               <div className="image-preview-container">
@@ -686,21 +629,6 @@ Keep your response brief and practical.`;
                       <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
                     </svg>
                   </button>
-                  <button className="icon-btn">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="12" cy="12" r="3"></circle>
-                      <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
-                    </svg>
-                  </button>
                 </div>
                 <input
                   type="text"
@@ -745,5 +673,4 @@ Keep your response brief and practical.`;
     </div>
   );
 }
-
 export default Search;
