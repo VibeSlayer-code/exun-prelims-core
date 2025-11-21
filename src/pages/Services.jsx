@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { servicesList } from './servicesData'; 
 import './Services.css';
+import toast from 'react-hot-toast';
 
 function Services() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ function Services() {
     e.preventDefault();
 
     if (!isLoggedIn) {
-        alert("Access Denied. Login Required.");
+        toast.error("Access Denied. Login Required.");
         return;
     }
 
@@ -72,6 +73,8 @@ function Services() {
         `
     };
 
+    const toastId = toast.loading("Transmitting to Guild...");
+
     emailjs.send(
         'service_jtc96ia',     
         'template_gfukewt',
@@ -79,17 +82,17 @@ function Services() {
         'c7IUhteuvXVvMlGqF' 
     )
     .then(() => {
-        alert(`MISSION UPLOADED.\n\nTarget: ${targetObject}\nCost: $${estimatedCost}\n\nBriefing sent to ${userEmail}`);
+        toast.success(`MISSION UPLOADED.\nTarget: ${targetObject}`, { id: toastId }, `Check your mail.`);
+        
         closeRequestModal();
         setTargetObject("");
         setMassValue(5);
         setSelectedHazards({});
     }, (error) => {
         console.error(error);
-        alert("Transmission Failed.");
+        toast.error("Transmission Failed.", { id: toastId });
     });
   };
-
   return (
     <div className="services-page">
       
@@ -210,7 +213,7 @@ function Services() {
                     <div className="form-group">
                         <label>Environmental Hazards</label>
                         <div className="hazard-grid">
-                            {['Spiders', 'Water', 'Electricity', 'Height'].map(h => (
+                            {['Insect', 'Water', 'Electricity', 'Height'].map(h => (
                                 <div key={h} className="hazard-checkbox" onClick={() => toggleHazard(h)}>
                                     <input 
                                         type="checkbox" 

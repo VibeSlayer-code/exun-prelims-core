@@ -4,6 +4,7 @@ import emailjs from '@emailjs/browser';
 import { servicesList } from './servicesData';
 import './ServiceDetail.css';
 import VideoUplink from '../components/VideoUplink';
+import toast from 'react-hot-toast';
 
 function ServiceDetail() {
     const { id } = useParams();
@@ -55,11 +56,13 @@ function ServiceDetail() {
 
     const handleBookService = () => {
         if (!isLoggedIn) {
-            alert("Access Denied: Please Log In to the Network.");
+            toast.error("Access Denied: Please Log In."); 
             navigate('/login');
             return;
         }
-
+    
+        const toastId = toast.loading("Securing Contract...");
+        
         const templateParams = {
             to_email: userEmail,
             to_name: userName,
@@ -69,16 +72,18 @@ function ServiceDetail() {
         };
 
         emailjs.send('service_jtc96ia', 'template_gfukewt', templateParams, 'c7IUhteuvXVvMlGqF')
-            .then(() => {
-                alert(`CONTRACT CONFIRMED. \n\nTarget: ${service.title}\nSpecs: ${templateParams.specifications}\n\nConfirmation sent to ${userEmail}.`);
-            }, (error) => {
-                console.error('FAILED...', error.text);
-                alert("Network Error: Contract failed to transmit.");
-            });
-    };
+          .then(() => {
+              toast.success("CONTRACT CONFIRMED.\nOperative dispatched. Check your mail.", { id: toastId });
+          }, (error) => {
+              toast.error("Network Error: Failed to transmit.", { id: toastId });
+          });
+      };
 
     const handleSubmitReview = (e) => {
         e.preventDefault();
+    
+        const toastId = toast.loading("Archiving Feedback...");
+
 
         const templateParams = {
             to_email: userEmail,
@@ -87,13 +92,14 @@ function ServiceDetail() {
             review_content: reviewText
         };
 
+
         emailjs.send('service_jtc96ia', 'template_nshvqss', templateParams, 'c7IUhteuvXVvMlGqF')
-            .then(() => {
-                alert("Review Uploaded to the Archive.");
-                setIsReviewOpen(false);
-                setReviewText("");
-            });
-    };
+          .then(() => {
+              toast.success("Review Archived Successfully. Check your mail.", { id: toastId });
+              setIsReviewOpen(false);
+              setReviewText("");
+          });
+      };
 
     return (
         <div className="detail-page">
