@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { servicesList } from './servicesData';
 import './ServiceDetail.css';
+import VideoUplink from '../components/VideoUplink';
 
 function ServiceDetail() {
     const { id } = useParams();
@@ -18,6 +19,7 @@ function ServiceDetail() {
 
     const [isReviewOpen, setIsReviewOpen] = useState(false);
     const [reviewText, setReviewText] = useState("");
+    const [isVideoOpen, setIsVideoOpen] = useState(false);
 
     useEffect(() => {
         document.body.style.zoom = "100%";
@@ -173,7 +175,12 @@ function ServiceDetail() {
                     <div className="action-area">
                         <p className="review-link" onClick={() => setIsReviewOpen(true)}>LEAVE A REVIEW</p>
                         <div className="button-stack">
-                            <button className="outline-btn">Speak with person</button>
+                            <button 
+                                className="outline-btn" 
+                                onClick={() => setIsVideoOpen(true)}
+                            >
+                                Speak with person
+                            </button>
                             <button className="book-btn" onClick={handleBookService}>Book Service</button>
                         </div>
                     </div>
@@ -203,9 +210,14 @@ function ServiceDetail() {
                     </div>
                 </div>
             )}
+            {isVideoOpen && (
+                <VideoUplink 
+                    onClose={() => setIsVideoOpen(false)} 
+                    serviceName={service.title} 
+                />
+            )}
 
-        </div>
+        </div> // <--- This is the end of the "detail-page" div
     );
 }
-
 export default ServiceDetail;

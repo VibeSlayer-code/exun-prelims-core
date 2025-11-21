@@ -1,0 +1,262 @@
+/* --- FULL SCREEN OVERLAY --- */
+.modern-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* --- MAIN CONTAINER --- */
+.modern-interface {
+    width: 100%;
+    max-width: 1400px;
+    height: 90vh;
+    background-color: #0a0a0a;
+    border: 1px solid #222;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 100px rgba(0,0,0,0.8);
+}
+
+/* --- HEADER --- */
+.interface-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: #0f0f0f;
+    border-bottom: 1px solid #222;
+}
+
+.header-left { display: flex; gap: 15px; align-items: center; }
+
+.back-circle-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.2s;
+}
+.back-circle-btn:hover { background: #333; }
+
+.header-title { font-size: 18px; color: white; margin: 0; font-weight: 600; }
+.header-sub { font-size: 12px; color: #666; margin: 2px 0 0; }
+.header-right { color: #444; font-size: 13px; font-family: monospace; }
+
+/* --- BODY LAYOUT --- */
+.interface-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* --- VIDEO STAGE (LEFT) --- */
+.video-stage {
+    flex: 2;
+    background-color: #141414; /* Slightly lighter than bg */
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-feed {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* Video Placeholder / Connection Box */
+.video-placeholder {
+    position: absolute;
+    z-index: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #444;
+}
+.avatar-circle {
+    width: 80px; height: 80px; background: #1a1a1a;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 24px; margin-bottom: 15px;
+}
+
+.connect-box {
+    margin-top: 20px;
+    padding: 20px;
+    background: #0a0a0a;
+    border-radius: 12px;
+    border: 1px solid #222;
+    text-align: center;
+}
+.highlight-id { color: #8654d8; font-family: monospace; font-weight: bold; }
+.join-row { display: flex; gap: 10px; margin-top: 10px; }
+.join-row input { 
+    background: #1a1a1a; border: 1px solid #333; color: white; padding: 8px; border-radius: 6px; 
+}
+.join-row button {
+    background: #8654d8; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer;
+}
+
+/* PIP (Self View) */
+.pip-wrapper {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 180px;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #222;
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.pip-feed { width: 100%; height: 100%; object-fit: cover; }
+
+/* Control Bar */
+.control-bar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    z-index: 10;
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.ctrl-btn {
+    width: 45px; height: 45px;
+    border-radius: 50%;
+    border: none;
+    background: #2a2a2a;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.ctrl-btn:hover { background: #444; }
+.ctrl-btn.hangup { background: #d85454; }
+.ctrl-btn.hangup:hover { background: #ff4d4d; }
+
+/* --- SIDEBAR (RIGHT) --- */
+.sidebar-panel {
+    flex: 1;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-card {
+    background: #0f0f0f;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid #222;
+}
+.info-card h3 { margin: 0 0 5px; font-size: 18px; color: white; }
+.info-card p { margin: 0; font-size: 13px; color: #666; }
+
+.chat-tabs {
+    display: flex;
+    background: #0f0f0f;
+    padding: 5px;
+    border-radius: 50px;
+    border: 1px solid #222;
+}
+.tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #666;
+    padding: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: 0.2s;
+}
+.tab.active { background: #2a2a2a; color: white; font-weight: 600; }
+
+.chat-stream {
+    flex: 1;
+    background: #0f0f0f;
+    border-radius: 20px;
+    border: 1px solid #222;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+}
+
+.msg { display: flex; flex-direction: column; gap: 4px; }
+.msg .sender { font-size: 11px; color: #666; margin-left: 5px; }
+.msg .bubble {
+    background: #1a1a1a;
+    color: #ddd;
+    padding: 10px 15px;
+    border-radius: 12px;
+    border-top-left-radius: 2px;
+    font-size: 13px;
+    line-height: 1.4;
+    max-width: 85%;
+}
+.msg.sent { align-items: flex-end; }
+.msg.sent .bubble.purple {
+    background: #8654d8;
+    color: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 2px;
+}
+.msg .time { font-size: 10px; color: #444; align-self: flex-end; margin-right: 5px; }
+
+.chat-input-area {
+    display: flex;
+    gap: 10px;
+    background: #0f0f0f;
+    padding: 10px;
+    border-radius: 50px;
+    border: 1px solid #222;
+}
+.chat-input-area input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding-left: 15px;
+    outline: none;
+}
+.send-btn {
+    width: 35px; height: 35px;
+    border-radius: 50%;
+    background: #8654d8;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}

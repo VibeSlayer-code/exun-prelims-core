@@ -1,23 +1,34 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import emailjs from '@emailjs/browser'; // Import EmailJS
 import { servicesList } from './servicesData'; 
 import './Services.css';
 
 function Services() {
   const navigate = useNavigate();
   
+  // --- USER STATE ---
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userImage, setUserImage] = useState(null);
   const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState(""); // Need email to send to
+  
+  // --- MODAL & FORM STATE ---
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [massValue, setMassValue] = useState(5);
+  const [targetObject, setTargetObject] = useState("");
+  const [selectedHazards, setSelectedHazards] = useState({});
 
   useEffect(() => {
     document.body.style.zoom = "100%";
+    
     const loggedInStatus = localStorage.getItem('login') === 'true';
     setIsLoggedIn(loggedInStatus);
+    
     if (loggedInStatus) {
       setUserImage(localStorage.getItem('userImage'));
       setUserName(localStorage.getItem('userName') || "Agent");
+      setUserEmail(localStorage.getItem('userEmail')); // Get the email
     }
   }, []);
 
@@ -27,17 +38,72 @@ function Services() {
     window.location.reload();
   };
 
+  // --- FORM HANDLERS ---
+  const toggleHazard = (hazard) => {
+    setSelectedHazards(prev => ({
+        ...prev,
+        [hazard]: !prev[hazard] // Toggle true/false
+    }));
+  };
+
   const openRequestModal = () => setIsModalOpen(true);
   const closeRequestModal = () => setIsModalOpen(false);
 
+  // --- SEND EMAIL FUNCTION ---
   const handleSubmitRequest = (e) => {
     e.preventDefault();
-    alert("Contract transmitted to the Guild.");
-    closeRequestModal();
+
+    if (!isLoggedIn) {
+        alert("Access Denied. Login Required.");
+        return;
+    }
+
+    // 1. Calculate Data
+    const squadSize = Math.ceil(massValue / 5);
+    const estimatedCost = 10 + (massValue * 5);
+    const hazardsList = Object.keys(selectedHazards).filter(k => selectedHazards[k]).join(', ') || "None";
+
+    // 2. Prepare Email Params
+    const templateParams = {
+        to_email: userEmail,
+        to_name: userName,
+        service_name: "CUSTOM MISSION ARCHITECT", // Special Title
+        cost: `$${estimatedCost}`,
+        
+        // Combine all the physics data into one block
+        specifications: `
+          TARGET: ${targetObject}
+          MASS: ${massValue} grams
+          HAZARDS DETECTED: ${hazardsList}
+          REQUIRED SQUAD: ${squadSize} Units
+          WARNING: ${massValue > 30 ? "HEAVY LIFT PROTOCOL" : "STANDARD"}
+        `
+    };
+
+    // 3. Send via EmailJS
+    // REPLACE THESE WITH YOUR REAL KEYS!
+    emailjs.send(
+        'service_jtc96ia',      // <--- PASTE SERVICE ID
+        'template_gfukewt', // <--- PASTE BOOKING TEMPLATE ID
+        templateParams, 
+        'c7IUhteuvXVvMlGqF'       // <--- PASTE PUBLIC KEY
+    )
+    .then(() => {
+        alert(`MISSION UPLOADED.\n\nTarget: ${targetObject}\nCost: $${estimatedCost}\n\nBriefing sent to ${userEmail}`);
+        closeRequestModal();
+        // Reset form
+        setTargetObject("");
+        setMassValue(5);
+        setSelectedHazards({});
+    }, (error) => {
+        console.error(error);
+        alert("Transmission Failed.");
+    });
   };
 
   return (
     <div className="services-page">
+      
       <div className="hero-bg"></div>
 
       <nav className="navigation-bar">
@@ -74,9 +140,7 @@ function Services() {
                     />
                     <span className="nav-username">Hi, {userName}</span>
                 </div>
-                <button className="mini-signout-btn" onClick={handleSignOut} title="Sign Out">
-                    ✕
-                </button>
+                <button className="mini-signout-btn" onClick={handleSignOut} title="Sign Out">✕</button>
             </div>
         )}
       </nav>
@@ -94,7 +158,7 @@ function Services() {
         {servicesList.map((service, index) => (
           <div 
             key={service.id} 
-            className={`svc-card ${index === 0 || index === 3 || index === 4 ? 'wide-card' : ''}`}
+            className={`svc-card ${index === 0 || index === 3 || index === 6 ? 'wide-card' : ''}`}
             onClick={() => navigate(`/service/${service.id}`)}
           >
             <div className="svc-card-img">
@@ -113,15 +177,83 @@ function Services() {
         ))}
       </div>
 
+      {/* --- MISSION ARCHITECT MODAL --- */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeRequestModal}>
             <div className="modal-container" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2>Initiate Contract</h2>
+                    <h2>Architect New Mission</h2>
                     <button className="close-modal-btn" onClick={closeRequestModal}>×</button>
                 </div>
+                
                 <form className="modal-form" onSubmit={handleSubmitRequest}>
-                    <button type="submit" className="modal-submit-btn">TRANSMIT REQUEST</button>
+                    
+                    {/* 1. THE PROBLEM */}
+                    <div className="form-group">
+                        <label>Target Object / Obstacle</label>
+                        <input 
+                            type="text" 
+                            placeholder="e.g. Dead Rat, AA Battery, Water Puddle" 
+                            required 
+                            value={targetObject}
+                            onChange={(e) => setTargetObject(e.target.value)}
+                        />
+                    </div>
+
+                    {/* 2. THE PHYSICS SLIDER */}
+                    <div className="form-group">
+                        <label style={{display:'flex', justifyContent:'space-between'}}>
+                            <span>Estimated Mass</span>
+                            <span style={{color:'#8654d8'}}>{massValue} grams</span>
+                        </label>
+                        <input 
+                            type="range" 
+                            min="1" max="50" 
+                            value={massValue} 
+                            className="range-slider"
+                            onChange={(e) => setMassValue(e.target.value)}
+                        />
+                        <div className="range-labels">
+                            <span>Feather</span>
+                            <span>Coin</span>
+                            <span>Battery</span>
+                            <span>Rock</span>
+                        </div>
+                    </div>
+
+                    {/* 3. HAZARD TOGGLES */}
+                    <div className="form-group">
+                        <label>Environmental Hazards</label>
+                        <div className="hazard-grid">
+                            {['Spiders', 'Water', 'Electricity', 'Height'].map(h => (
+                                <div key={h} className="hazard-checkbox" onClick={() => toggleHazard(h)}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={!!selectedHazards[h]} 
+                                        readOnly // Controlled by div click
+                                    />
+                                    <label>{h}</label>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* 4. DYNAMIC SQUAD CALCULATION */}
+                    <div className="squad-estimator">
+                        <div className="est-row">
+                            <span>Required Operatives:</span>
+                            <strong>{Math.ceil(massValue / 5)} Units</strong>
+                        </div>
+                        <div className="est-row">
+                            <span>Est. Resource Cost:</span>
+                            <strong>${10 + (massValue * 5)}</strong>
+                        </div>
+                        <div className="est-warning">
+                            {massValue > 30 ? "⚠ WARNING: HIGH MASS. PULLEY SYSTEM REQUIRED." : "Standard Gravity Parameters."}
+                        </div>
+                    </div>
+
+                    <button type="submit" className="modal-submit-btn">INITIATE CONTRACT</button>
                 </form>
             </div>
         </div>
