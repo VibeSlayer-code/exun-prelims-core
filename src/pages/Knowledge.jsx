@@ -1,222 +1,247 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './Knowledge.css';
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./Knowledge.css";
 
 function Knowledge() {
-  const [activeTab, setActiveTab] = useState('insects');
-  const [languageChat, setLanguageChat] = useState([]);
-  const [notesChat, setNotesChat] = useState([]);
-  const [languageInput, setLanguageInput] = useState('');
-  const [notesInput, setNotesInput] = useState('');
-  const [langLoading, setLangLoading] = useState(false);
-  const [notesLoading, setNotesLoading] = useState(false);
+  const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userImage, setUserImage] = useState(null);
+  const [userName, setUserName] = useState("");
+  
+  const [placeholder, setPlaceholder] = useState("");
+  const [displayedText, setDisplayedText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+  const messagesEndRef = useRef(null);
 
-  const API_KEY = 'AIzaSyBYzf144EVp8crCUPfLZ_q5AJqMGWocesM';
-  const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+  const randomQueries = [
+    "Calculate caloric needs for a 1.5cm human",
+    "Is spider silk strong enough for climbing gear?",
+    "How to purify a water droplet using charcoal?",
+    "List of household chemicals fatal at micro-scale",
+    "Structural integrity of cardboard for shelter",
+  ];
 
-  const switchTab = (tabName) => {
-    setActiveTab(tabName);
+  useEffect(() => {
+    const loggedInStatus = localStorage.getItem("login") === "true";
+    setIsLoggedIn(loggedInStatus);
+    if (loggedInStatus) {
+      setUserImage(localStorage.getItem("userImage"));
+      setUserName(localStorage.getItem("userName") || "Operative");
+    }
+
+    const name = localStorage.getItem("userName") || "Operative";
+    const fullText = `System Online. Welcome, ${name}.`;
+    let index = 0;
+    setDisplayedText("");
+    
+    const typingInterval = setInterval(() => {
+      if (index < fullText.length) {
+        setDisplayedText(prev => fullText.slice(0, prev.length + 1));
+        index++;
+      } else {
+        clearInterval(typingInterval);
+        setTimeout(() => setShowCursor(false), 1000);
+      }
+    }, 50);
+
+    return () => clearInterval(typingInterval);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * randomQueries.length);
+      setPlaceholder(randomQueries[randomIndex]);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  const handleSignOut = () => {
+    localStorage.clear();
+    setIsLoggedIn(false);
+    window.location.reload();
   };
 
-  const callGemini = async (prompt) => {
+  const handleSearch = async (searchQuery = query) => {
+    if (!searchQuery.trim()) return;
+
+    const userMessage = { role: "user", content: searchQuery, timestamp: Date.now() };
+    setMessages(prev => [...prev, userMessage]);
+    setQuery("");
+    setLoading(true);
+
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-goog-api-key': API_KEY
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }]
-        })
+      const response = await fetch('/api/agent_search', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: searchQuery }),
       });
 
       const data = await response.json();
-      if (data.candidates && data.candidates[0].content) {
-        return data.candidates[0].content.parts[0].text;
+
+      if (data.response) {
+        const aiMessage = { 
+            role: "ai", 
+            content: data.response, 
+            sources: data.sources, 
+            timestamp: Date.now() 
+        };
+        setMessages(prev => [...prev, aiMessage]);
+      } else {
+        throw new Error("Agent returned no data.");
       }
-      throw new Error('Invalid response');
     } catch (error) {
-      return `Error: ${error.message}`;
+      const errorMessage = { 
+        role: "ai", 
+        content: `[SYSTEM ERROR]: Connection to Intelligence Layer failed.`, 
+        timestamp: Date.now() 
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const sendLanguageQuery = async () => {
-    if (!languageInput.trim()) return;
-
-    setLangLoading(true);
-    setLanguageChat([...languageChat, { type: 'user', text: languageInput }]);
-
-    const prompt = `Dr. Tai Ni, a world-class researcher and acclaimed innovator from Nuxeland, stood at the forefront of miniature sciences. With his latest ventures and discoveries in shrinking the human body, his work was sensational — yet not a sensation to which the public paid much heed. All his lab rats were successfully shrunk, almost invisibly small. His brother, Fhu, called his discovery a failure; Dr. Ni called it proof — proof that required closer inspection, something that most were not willing to offer. The public outrage forced Ni to go underground; his notes remain the only remnants of his findings.
-
-
-In the catacombs beneath Nuxeland, Ni's former test subjects formed a network of reformists called etinuxE. Their greatest achievement? The ability to shrink people.
-
-
-Their purpose is ambiguous — what do they aim to accomplish? Are they attempting to use shrinking technology to escape some crisis, looking to make a quick buck, or do they see this as the next step in humanity's evolution?
-
-You are an expert in insect communication for etinuXe (tiny humans at 1cm).
-
-IMPORTANT: Give short answers (3-5 sentences max). Use plain text only - NO markdown formatting like ** or ##.
-
-Explain how to communicate with insects through pheromones, vibrations, and body language.
-
-Question: ${languageInput}
-
-Keep your response brief and practical.`;
-
-    const answer = await callGemini(prompt);
-    setLanguageChat(prev => [...prev, { type: 'assistant', text: answer }]);
-    setLanguageInput('');
-    setLangLoading(false);
-  };
-
-  const searchNotes = async () => {
-    if (!notesInput.trim()) return;
-
-    setNotesLoading(true);
-    setNotesChat([...notesChat, { type: 'user', text: notesInput }]);
-
-    const prompt = `Dr. Tai Ni, a world-class researcher and acclaimed innovator from Nuxeland, stood at the forefront of miniature sciences. With his latest ventures and discoveries in shrinking the human body, his work was sensational — yet not a sensation to which the public paid much heed. All his lab rats were successfully shrunk, almost invisibly small. His brother, Fhu, called his discovery a failure; Dr. Ni called it proof — proof that required closer inspection, something that most were not willing to offer. The public outrage forced Ni to go underground; his notes remain the only remnants of his findings.
-
-
-In the catacombs beneath Nuxeland, Ni's former test subjects formed a network of reformists called etinuxE. Their greatest achievement? The ability to shrink people.
-
-
-Their purpose is ambiguous — what do they aim to accomplish? Are they attempting to use shrinking technology to escape some crisis, looking to make a quick buck, or do they see this as the next step in humanity's evolution?
-You are accessing Dr. Tai Ni's digitized notes on miniaturization.
-
-IMPORTANT: Give short answers (3-5 sentences max). Use plain text only - NO markdown formatting like ** or ##.
-
-Search: ${notesInput}
-
-Provide brief information on shrinking process, safety protocols, reversal techniques, and long-term effects.
-
-Keep your response concise and practical.`;
-
-    const answer = await callGemini(prompt);
-    setNotesChat(prev => [...prev, { type: 'assistant', text: answer }]);
-    setNotesInput('');
-    setNotesLoading(false);
+  const formatTimestamp = (timestamp) => {
+    return new Date(timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   };
 
   return (
-    <div className="knowledge-container">
-      <div className="container">
-        <div className="header">
-          <h1>Knowledge Portal</h1>
-          <p>Educational Resources for Future Generations</p>
+    <div className="knowledge-page">
+      
+      <nav className="navigation-bar">
+        <div className="brand-section">
+            <div className="brand-icon">
+              <img src="assets/Global/logo.png" alt="Nixun Logo" />
+            </div>
+            <div className="brand-name">Nixun</div>
         </div>
 
-        <div className="tabs">
-          <button className={`tab-button ${activeTab === 'insects' ? 'active' : ''}`} onClick={() => switchTab('insects')}>Insect Guide</button>
-          <button className={`tab-button ${activeTab === 'language' ? 'active' : ''}`} onClick={() => switchTab('language')}>Insect Language</button>
-          <button className={`tab-button ${activeTab === 'notes' ? 'active' : ''}`} onClick={() => switchTab('notes')}>Dr. Tai Ni's Notes</button>
-          <button className={`tab-button ${activeTab === 'microexp' ? 'active' : ''}`} onClick={() => switchTab('microexp')}>Microexperiences</button>
+        <div className="navigation-menu-container">
+            <ul className="navigation-menu">
+              <li><Link to="/" className="navigation-link">Home</Link></li>
+              <li><span className="navigation-separator">/</span></li>
+              <li><Link to="/services" className="navigation-link">Jobs</Link></li>
+              <li><span className="navigation-separator">/</span></li>
+              <li><Link to="/search" className="navigation-link">Search</Link></li>
+              <li><span className="navigation-separator">/</span></li>
+              <li><Link to="/map" className="navigation-link">3d Map</Link></li>
+              <li><span className="navigation-separator">/</span></li>
+              <li><Link to="/library" className="navigation-link active">Library</Link></li>
+            </ul>
         </div>
 
-        <div id="insects" className={`tab-content ${activeTab === 'insects' ? 'active' : ''}`}>
-          <h2>Insects for Commute & Transport</h2>
-          <div className="insect-grid">
-            <div className="insect-card">
-              <h3>Ladybug</h3>
-              <p>Speed: Medium<br />Load: Light<br />Best for: Short distances</p>
+        {!isLoggedIn ? (
+             <button className="login-button" onClick={() => navigate('/login')}>LOG IN</button>
+        ) : (
+            <div className="profile-pill">
+                <div className="profile-data">
+                    <img 
+                        src={userImage || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} 
+                        alt="User" 
+                        className="nav-profile-img" 
+                    />
+                    <span className="nav-username">Hi, {userName}</span>
+                </div>
+                <button className="mini-signout-btn" onClick={handleSignOut} title="Sign Out">
+                    ✕
+                </button>
             </div>
-            <div className="insect-card">
-              <h3>Grasshopper</h3>
-              <p>Speed: Fast<br />Load: Medium<br />Best for: Quick escapes</p>
-            </div>
-            <div className="insect-card">
-              <h3>Ant</h3>
-              <p>Speed: Slow<br />Load: Heavy<br />Best for: Cargo transport</p>
-            </div>
-            <div className="insect-card">
-              <h3>Butterfly</h3>
-              <p>Speed: Medium<br />Load: Light<br />Best for: Long distances</p>
-            </div>
-            <div className="insect-card">
-              <h3>Beetle</h3>
-              <p>Speed: Medium<br />Load: Heavy<br />Best for: Rough terrain</p>
-            </div>
-            <div className="insect-card">
-              <h3>Dragonfly</h3>
-              <p>Speed: Very Fast<br />Load: Light<br />Best for: Reconnaissance</p>
-            </div>
-          </div>
-        </div>
+        )}
+      </nav>
 
-        <div id="language" className={`tab-content ${activeTab === 'language' ? 'active' : ''}`}>
-          <h2>Communicate with Insects</h2>
-          <p>Ask our AI assistant to translate phrases or learn basic insect communication patterns.</p>
-          <div className="chat-container" id="languageChat">
-            {languageChat.map((msg, index) => (
-              <div key={index} className={`message ${msg.type === 'user' ? 'user' : ''}`}>
-                {msg.text}
-              </div>
-            ))}
-            {langLoading && <div className="message loading">Thinking...</div>}
-          </div>
-          <div className="input-group">
-            <input
-              type="text"
-              value={languageInput}
-              onChange={(e) => setLanguageInput(e.target.value)}
-              placeholder="Ask about insect communication..."
-              onKeyPress={(e) => e.key === 'Enter' && sendLanguageQuery()}
-            />
-            <button className="send-button" onClick={sendLanguageQuery} disabled={langLoading}>Send</button>
-          </div>
-        </div>
+      <div className="k-container">
+        <div className="k-main-centered">
+            
+            <div className="chat-scroll-area">
+                {messages.length === 0 && (
+                    <div className="empty-state">
+                        <h1>
+                            {displayedText}
+                            {showCursor && <span className="typing-cursor">|</span>}
+                        </h1>
+                        <p>MICRO-SCALE ANALYSIS ENGINE.</p>
+                        
+                        <div className="suggestions">
+                            {randomQueries.slice(0, 3).map((q, i) => (
+                                <button 
+                                    key={i} 
+                                    className="suggestion-btn"
+                                    onClick={() => handleSearch(q)}
+                                >
+                                    {q}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-        <div id="notes" className={`tab-content ${activeTab === 'notes' ? 'active' : ''}`}>
-          <h2>Dr. Tai Ni's Digitized Notes</h2>
-          <p>Access the complete archive of Dr. Tai Ni's research on miniaturization technology.</p>
-          <div className="chat-container" id="notesChat">
-            {notesChat.map((msg, index) => (
-              <div key={index} className={`message ${msg.type === 'user' ? 'user' : ''}`}>
-                {msg.text}
-              </div>
-            ))}
-            {notesLoading && <div className="message loading">Searching...</div>}
-          </div>
-          <div className="input-group">
-            <input
-              type="text"
-              value={notesInput}
-              onChange={(e) => setNotesInput(e.target.value)}
-              placeholder="Search Dr. Tai Ni's notes..."
-              onKeyPress={(e) => e.key === 'Enter' && searchNotes()}
-            />
-            <button className="send-button" onClick={searchNotes} disabled={notesLoading}>Search</button>
-          </div>
-        </div>
+                {messages.map((msg, i) => (
+                    <div key={i} className={`message-row ${msg.role}`}>
+                        <div className="msg-timestamp">{formatTimestamp(msg.timestamp)}</div>
+                        <div className="msg-bubble">
+                            {msg.content.split('\n').map((line, l) => <p key={l}>{line}</p>)}
+                            
+                            {msg.sources && msg.sources.length > 0 && (
+                                <div className="sources-grid">
+                                    {msg.sources.map((src, idx) => (
+                                        <a key={idx} href={src.url} target="_blank" rel="noreferrer" className="source-chip">
+                                            <div className="src-icon-box">
+                                                {src.type === 'wiki' ? 'W' : '🌐'}
+                                            </div>
+                                            <div className="src-info">
+                                                <span className="src-title">{src.title}</span>
+                                                <span className="src-url">{new URL(src.url).hostname}</span>
+                                            </div>
+                                        </a>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+                
+                {loading && (
+                    <div className="message-row ai">
+                        <div className="msg-bubble loading-state">
+                            <div className="loading-animation">
+                                <img 
+                                    src="/assets/Global/logo.png" 
+                                    alt="Loading" 
+                                    className="spinning-logo" 
+                                />
+                                <span className="loading-text">Analyzing Surface Data...</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                <div ref={messagesEndRef} />
+            </div>
 
-        <div id="microexp" className={`tab-content ${activeTab === 'microexp' ? 'active' : ''}`}>
-          <h2>Microexperiences Tourism</h2>
-          <p>Experience life at 1cm! We've reverse-engineered Dr. Tai Ni's shrinking technique for temporary use.</p>
-          <div className="insect-grid">
-            <div className="insect-card">
-              <h3>City Explorer</h3>
-              <p>Duration: 2 hours<br />Price: $199<br />Explore the city from tiny perspective</p>
+            <div className="input-wrapper">
+                <div className="input-box">
+                    <input 
+                        type="text" 
+                        placeholder={placeholder || "Enter Query..."}
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        disabled={loading}
+                    />
+                    <button onClick={() => handleSearch()} disabled={loading}>
+                        ➤
+                    </button>
+                </div>
             </div>
-            <div className="insect-card">
-              <h3>Nature Adventure</h3>
-              <p>Duration: 4 hours<br />Price: $349<br />Experience nature like never before</p>
-            </div>
-            <div className="insect-card">
-              <h3>Home Safari</h3>
-              <p>Duration: 24 hours<br />Price: $799<br />See your home from new angle</p>
-            </div>
-            <div className="insect-card">
-              <h3>Full Experience</h3>
-              <p>Duration: 48 hours<br />Price: $1499<br />Complete tiny human experience</p>
-            </div>
-          </div>
-        </div>
 
-        <Link to="/" className="back-button">← Back to Home</Link>
+        </div>
       </div>
     </div>
   );
