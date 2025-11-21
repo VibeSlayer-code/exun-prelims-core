@@ -1,0 +1,306 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.login-container {
+  height: 100vh;
+  display: flex;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  background-color: #000000;
+  overflow: hidden;
+
+  transform: scale(0.67);
+  transform-origin: top left;
+  width: calc(100% / 0.67);
+  height: calc(100% / 0.67);
+}
+
+.left {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background: #000000;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.right {
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.right .side {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.logo {
+  width: 45px;
+  height: 43.9px;
+  margin-top: 95.31px;
+  margin-bottom: 0;
+}
+
+.content {
+  position: static;
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 100px;
+}
+
+.welcome-text {
+  color: #ffffff;
+  font-size: 64px;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: #ccc;
+  margin-bottom: 18px;
+}
+
+.idk {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 0;
+}
+
+.google,
+.github {
+  width: 290px;
+  height: 73px;
+  border-radius: 40px;
+  border: 1px solid #555;
+  background: #333;
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  padding-left: 30px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  outline: none;
+}
+
+.google:hover,
+.github:hover {
+  background: #444;
+}
+
+.google:focus,
+.github:focus {
+  outline: none;
+  border: 1px solid #555;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+}
+
+.or {
+  width: 620px;
+  height: 13px;
+  margin-top: 26px;
+  margin-bottom: 26px;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0.5) invert(1);
+}
+
+.form {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.input-group input {
+  width: 100%;
+  height: 79.2px;
+  border-radius: 12px;
+  border: 1px solid #555;
+  padding: 28px 20px 0 20px;
+  font-size: 20px;
+  outline: none;
+  background: #333;
+  color: #fff;
+}
+
+.input-group input:focus {
+  border: 1px solid #555;
+  outline: none;
+}
+
+.input-group input::placeholder {
+  color: #ccc;
+}
+
+.input-group label {
+  position: absolute;
+  top: 26px;
+  left: 20px;
+  font-size: 20px;
+  color: #ccc;
+  pointer-events: none;
+  transition: 0.18s ease;
+}
+
+.input-group input:focus+label,
+.input-group input:not(:placeholder-shown)+label {
+  top: 8px;
+  left: 20px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.login-btn {
+  width: 100%;
+  height: 79.2px;
+  border-radius: 40px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  font-size: 20px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.login-btn:hover {
+  background: #444;
+}
+
+.login-btn:focus {
+  outline: none;
+  border: 1px solid #555;
+}
+
+.signin-text {
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  color: #ccc;
+  margin-top: 44.3px;
+  margin-bottom: 0;
+  display: block;
+  align-self: center;
+}
+
+.signin-text span {
+  color: #8654d8;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.signin-text span:hover {
+  color: #9a6ee8;
+}
+
+.footer {
+  margin-top: auto;
+  font-size: 16px;
+  color: #ccc;
+  text-align: center;
+  white-space: nowrap;
+  padding-bottom: 28px;
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #333;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s ease-in-out;
+  border: 1px solid #555;
+}
+
+.notification.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tick {
+  font-size: 24px;
+  color: #4caf50;
+}
+
+@media (max-width: 1000px) {
+  .welcome-text {
+    font-size: 40px;
+  }
+
+  .content {
+    margin-top: 80px;
+  }
+
+  .or {
+    width: 420px;
+  }
+
+  .google,
+  .github {
+    width: 220px;
+    height: 60px;
+    font-size: 16px;
+  }
+
+  .form {
+    width: 420px;
+  }
+
+  .input-group input {
+    height: 64px;
+    font-size: 16px;
+  }
+
+  .login-btn {
+    height: 64px;
+    font-size: 16px;
+  }
+
+  .signin-text {
+    margin-top: 28px;
+  }
+}
