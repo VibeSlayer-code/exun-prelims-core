@@ -24,7 +24,7 @@ function Search() {
 
   const API_KEY = "AIzaSyD8AEu0nUoyAlrBnqXoniZFcRlk9XOl_3o";
   const API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
   const randomQueries = [
     "What's the lethal dose of caffeine for a 1cm human?",
