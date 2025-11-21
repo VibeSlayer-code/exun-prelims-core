@@ -1,11 +1,10 @@
-.knowledge-page {
+.knowledge-container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: #0c0c0c;
   color: #ffffff;
   zoom: 67%;
   min-height: 100vh;
 }
-
 
 .container {
   max-width: 1200px;
