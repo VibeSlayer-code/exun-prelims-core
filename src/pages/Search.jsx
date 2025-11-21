@@ -22,7 +22,7 @@ function Search() {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const API_KEY = "AIzaSyCNsqyTWBom34l6Hqk67_5jd3dYz9ZyhmA";
+  const API_KEY = "AIzaSyD8AEu0nUoyAlrBnqXoniZFcRlk9XOl_3o";
   const API_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
