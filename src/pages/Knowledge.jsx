@@ -72,60 +72,60 @@ function Knowledge() {
   };
 
   const handleSearch = async (searchQuery = query) => {
-  if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) return;
 
-  console.log("📤 Sending Query to Backend:", searchQuery);
+    console.log("📤 Sending Query to Backend:", searchQuery);
 
-  const userMessage = { role: "user", content: searchQuery, timestamp: Date.now() };
-  setMessages(prev => [...prev, userMessage]);
-  setQuery("");
-  setLoading(true);
+    const userMessage = { role: "user", content: searchQuery, timestamp: Date.now() };
+    setMessages(prev => [...prev, userMessage]);
+    setQuery("");
+    setLoading(true);
 
-  try {
-    console.log("🌍 Calling API: /api/agent_search");
+    try {
+      console.log("🌍 Calling API: /api/agent_search");
 
-    const response = await fetch("/api/agent_search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: searchQuery }),
-    });
+      const response = await fetch("/api/agent_search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: searchQuery }),
+      });
 
-    console.log("📥 HTTP Response Status:", response.status);
+      console.log("📥 HTTP Response Status:", response.status);
 
-    if (!response.ok) {
-      console.error("❌ HTTP Error:", response.statusText);
-      throw new Error("HTTP Error " + response.status);
-    }
+      if (!response.ok) {
+        console.error("❌ HTTP Error:", response.statusText);
+        throw new Error("HTTP Error " + response.status);
+      }
 
-    const data = await response.json();
-    console.log("🧠 Backend JSON Response:", data);
+      const data = await response.json();
+      console.log("🧠 Backend JSON Response:", data);
 
-    if (data.response) {
-      const aiMessage = { 
+      if (data.response) {
+        const aiMessage = { 
+          role: "ai", 
+          content: data.response, 
+          sources: data.sources, 
+          timestamp: Date.now() 
+        };
+        setMessages(prev => [...prev, aiMessage]);
+      } else {
+        console.warn("⚠️ Backend Response Missing 'response' Field:", data);
+        throw new Error("Agent returned no usable output.");
+      }
+
+    } catch (error) {
+      console.error("🚨 CAUGHT ERROR:", error);
+
+      const errorMessage = { 
         role: "ai", 
-        content: data.response, 
-        sources: data.sources, 
-        timestamp: Date.now() 
+        content: `[SYSTEM ERROR]: Connection to Intelligence Layer failed.`, 
+        timestamp: Date.now()
       };
-      setMessages(prev => [...prev, aiMessage]);
-    } else {
-      console.warn("⚠️ Backend Response Missing 'response' Field:", data);
-      throw new Error("Agent returned no usable output.");
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setLoading(false);
     }
-
-  } catch (error) {
-    console.error("🚨 CAUGHT ERROR:", error);
-
-    const errorMessage = { 
-      role: "ai", 
-      content: `[SYSTEM ERROR]: Connection to Intelligence Layer failed.`, 
-      timestamp: Date.now()
-    };
-    setMessages(prev => [...prev, errorMessage]);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const formatTimestamp = (timestamp) => {
     return new Date(timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
@@ -183,7 +183,7 @@ function Knowledge() {
                     <div className="empty-state">
                         <h1>
                             {displayedText}
-                            {showCursor && <span className="typing-cursor">|</span>}
+                            {showCursor && <span className="typing-cursor"></span>}
                         </h1>
                         <p>MICRO-SCALE ANALYSIS ENGINE.</p>
                         
