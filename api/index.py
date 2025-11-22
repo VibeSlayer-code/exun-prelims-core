@@ -1,97 +1,90 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from ddgs import DDGS
-import requests
+from google import genai
+import os
 import wikipedia
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-GEMINI_API_URL = "https://nixun-api.onrender.com/gemini_message"
+client = genai.Client(api_key="AIzaSyDRwUK_BU9EYJxtfo3E40n8mNOvCGiwXjU")
+model_id = "gemini-2.5-flash-preview-09-2025" 
 
 def get_combined_intel(query):
     print(f"-> Searching: {query}")
+    
     context_text = ""
     sources_list = []
-    
+
     try:
         with DDGS() as ddgs:
-            for r in ddgs.text(query, max_results=2):
+            ddg_results = list(ddgs.text(query, max_results=2))
+            for r in ddg_results:
                 context_text += f"SOURCE (WEB): {r['title']} - {r['body']}\n"
                 sources_list.append({"title": r['title'], "url": r['href'], "type": "web"})
     except Exception as e:
         print(f"DDG Error: {e}")
-    
+
     try:
         search_res = wikipedia.search(query)
         if search_res:
-            page = wikipedia.page(search_res[0], auto_suggest=False)
-            context_text += f"SOURCE (WIKI): {page.title} - {page.summary[:300]}\n"
-            sources_list.append({"title": page.title, "url": page.url, "type": "wiki"})
+            wiki_page = wikipedia.page(search_res[0], auto_suggest=False)
+            context_text += f"SOURCE (WIKI): {wiki_page.title} - {wiki_page.summary[:500]}\n"
+            sources_list.append({"title": "Wiki: " + wiki_page.title, "url": wiki_page.url, "type": "wiki"})
     except Exception as e:
         print(f"Wiki Error: {e}")
-    
+
     if not context_text:
-        context_text = "No live external data found."
-    
-    return context_text, sources_list
+        context_text = "No live data found. Rely on internal general knowledge."
+
+    return {"context": context_text, "sources": sources_list}
 
 @app.route('/api/agent_search', methods=['POST'])
 def agent_search():
     data = request.json
-    user_query = data.get("query")
+    user_query = data.get('query')
     
     if not user_query:
-        return jsonify({"error": "No query provided."})
-    
-    print(f"--- Processing Query: {user_query} ---")
-    context, sources = get_combined_intel(user_query)
-    
-    prompt = f"""
-    User Question: {user_query}
-    Context:
-    {context}
-    You are a micro-scale scientific assistant.
-    Convert all knowledge to apply to a 1.5cm human.
-    Answer in a practical, medical way. 10 sentences max.
-    """
-    
-    try:
-        response = requests.post(
-            GEMINI_API_URL,
-            json={"message": prompt}
-        )
-        response.raise_for_status()
-        result = response.json()
-        
-        print("AI Response:", result.get("reply"))
-        return jsonify({
-            "response": result.get("reply"),
-            "sources": sources
-        })
-    except Exception as e:
-        print("🔥 AI ERROR:", str(e))
-        return jsonify({"error": "Analysis Failed."})
+        return jsonify({"error": "Empty query"})
 
-@app.route('/gemini_message', methods=['POST'])
-def gemini_message():
-    data = request.json
-    message = data.get("message")
+    print(f"--- Processing: {user_query} ---")
+
+    intel = get_combined_intel(f"{user_query} physical properties mechanism size")
     
-    if not message:
-        return jsonify({"error": "No message provided."})
+    full_prompt = f"""
+    SYSTEM INSTRUCTION:
+    You are an analytical survival assistant for humans scaled down to 1.5cm height.
     
+    CONTEXT FROM REAL WORLD:
+    {intel['context']}
+    
+    INSTRUCTIONS:
+    1. Answer the user's question using the Context provided.
+    2. Adapt the data to the micro-scale context (e.g., Square-Cube Law implications, fluid dynamics at small scale).
+    3. Tone: Direct, practical, and informative. Do not use a "persona" or roleplay. Just provide the data.
+    4. Format: Plain text, paragraphs. Max 15 sentences.
+
+    USER QUERY:
+    {user_query}
+    """
+
     try:
-        result = client.models.generate_content(
+        response = client.models.generate_content(
             model=model_id,
-            contents=[{"role": "user", "parts": [{"text": message}]}]
+            contents=[{"role": "user", "parts": [{"text": full_prompt}]}]
         )
-        return jsonify({"reply": result.text})
+        
+        return jsonify({
+            "response": response.text,
+            "sources": intel['sources']
+        })
+
     except Exception as e:
-        print("🔥 GEMINI ERROR:", str(e))
+        print(f"AI Error: {e}")
         return jsonify({"error": "Analysis Failed."})
 
 if __name__ == "__main__":
