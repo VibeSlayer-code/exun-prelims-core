@@ -22,7 +22,7 @@ function Search() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
-  const API_KEY = "AIzaSyDt8HG7jXma8iYPxV12HkOnLcQPav7Ssa4";
+  const API_KEY = "AIzaSyCdxBQauAkuylriZYBlGq1-Whq0I7Rco8E";
   const API_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
   const randomQueries = [
