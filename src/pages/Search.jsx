@@ -213,6 +213,7 @@ Keep your response brief and practical.`;
           ],
         }),
       });
+      console.log("Loaded API Key:", API_KEY);
       const data = await response.json();
       console.log("Gemini API Response:", data);
 
