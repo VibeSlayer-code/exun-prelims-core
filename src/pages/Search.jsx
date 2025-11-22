@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ProfileModal from "../components/ProfileModal";
 import "./Search.css";
+
 function Search() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
@@ -23,10 +24,8 @@ function Search() {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+  const API_URL = "https://nixun-api.onrender.com/gemini_message";
 
-  const API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
   const randomQueries = [
     "What's the lethal dose of caffeine for a 1cm human?",
     "How to perform CPR on someone 0.4 inches tall?",
@@ -39,12 +38,14 @@ function Search() {
     "Anesthesia protocols for micro-surgery",
     "Fluid replacement therapy at nano-volumes",
   ];
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good morning";
     if (hour < 18) return "Good afternoon";
     return "Good evening";
   };
+
   useEffect(() => {
     const loggedInStatus = localStorage.getItem("login") === "true";
     setIsLoggedIn(loggedInStatus);
@@ -57,6 +58,7 @@ function Search() {
       setConversations(JSON.parse(savedConversations));
     }
   }, []);
+
   useEffect(() => {
     if (messages.length === 0) {
       const fullText = `${getGreeting()}, ${userName || "etinuxE"}.`;
@@ -75,6 +77,7 @@ function Search() {
       return () => clearInterval(typingInterval);
     }
   }, [messages.length, userName]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setIsChangingPlaceholder(true);
@@ -86,17 +89,21 @@ function Search() {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
   const handleSignOut = () => {
     localStorage.clear();
     setIsLoggedIn(false);
     window.location.reload();
   };
+
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -108,6 +115,7 @@ function Search() {
       reader.readAsDataURL(file);
     }
   };
+
   const clearImage = () => {
     setSelectedImage(null);
     setImagePreview(null);
@@ -115,6 +123,7 @@ function Search() {
       fileInputRef.current.value = "";
     }
   };
+
   const saveConversation = (convId, newMessages) => {
     const updatedConversations = [...conversations];
     const existingIndex = updatedConversations.findIndex(
@@ -135,6 +144,7 @@ function Search() {
     setConversations(limitedConversations);
     localStorage.setItem("conversations", JSON.stringify(limitedConversations));
   };
+
   const copyToClipboard = async (text, messageTimestamp) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -150,38 +160,31 @@ function Search() {
       console.error("Failed to copy: ", err);
     }
   };
+
   const handleSearch = async (searchQuery = query) => {
     if (!searchQuery.trim()) return;
+
     const convId = currentConvId || Date.now().toString();
     if (!currentConvId) setCurrentConvId(convId);
+
     const userMessage = {
       role: "user",
       content: searchQuery,
       timestamp: Date.now(),
       image: imagePreview,
     };
+
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setQuery("");
     setLoading(true);
-    //this is the image sending logic
-    let imagePart = null;
-    if (imagePreview) {
-      const base64Data = imagePreview.split(",")[1];
-      const mimeType = selectedImage?.type || "image/jpeg";
-      imagePart = {
-        inlineData: {
-          mimeType,
-          data: base64Data,
-        },
-      };
-    }
-    clearImage();
+
     const systemPrompt = `Dr. Tai Ni, a world-class researcher and acclaimed innovator from Nuxeland, stood at the forefront of miniature sciences. With his latest ventures and discoveries in shrinking the human body, his work was sensational — yet not a sensation to which the public paid much heed. All his lab rats were successfully shrunk, almost invisibly small. His brother, Fhu, called his discovery a failure; Dr. Ni called it proof — proof that required closer inspection, something that most were not willing to offer. The public outrage forced Ni to go underground; his notes remain the only remnants of his findings.
 In the catacombs beneath Nuxeland, Ni's former test subjects formed a network of reformists called etinuxE. Their greatest achievement? The ability to shrink people.
 You are helping the etinuXe community - humans shrunk to 1cm tall.
-IMPORTANT: Provide long, detailed answers which are clear not just general guidelines but really specific based on research studies(USE online and research studies in your database) (13-15 sentences max). Use plain text only - NO markdown formatting like ** for bold or ## for headers.
+IMPORTANT: Provide long, detailed answers which are clear not just general guidelines but really specific based on research studies (USE online and research studies in your database) (13-15 sentences max). Use plain text only - NO markdown formatting like ** for bold or ## for headers.
 Convert this query from human to tiny human scale (1cm, ~0.1g body mass):`;
+
     const considerText = `
 Consider:
 - Dosage calculations (scale by body mass)
@@ -190,50 +193,50 @@ Consider:
 - Metabolic changes
 - it should be medically accurate and impressive
 Keep your response brief and practical.`;
-    let parts = [
-      { text: systemPrompt },
-      { text: searchQuery },
-      { text: considerText },
-    ];
-    if (imagePart) {
-      parts.splice(2, 0, imagePart);
+
+    const fullMessage = `${systemPrompt}\n\nUser Query: ${searchQuery}\n\n${considerText}`;
+
+    let imageNote = "";
+    if (imagePreview) {
+      imageNote = "\n\n[Note: User has attached an image, but image analysis is not yet supported via this endpoint. Please respond based on the text query only.]";
+      clearImage();
     }
+
     try {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-goog-api-key": API_KEY,
         },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: parts,
-            },
-          ],
+          message: fullMessage + imageNote,
         }),
       });
-      console.log("Loaded API Key:", API_KEY);
-      const data = await response.json();
-      console.log("Gemini API Response:", data);
 
-      if (data.candidates && data.candidates[0].content) {
-        const answer = data.candidates[0].content.parts[0].text;
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("API Response:", data);
+
+      if (data.reply) {
         const aiMessage = {
           role: "ai",
-          content: answer,
+          content: data.reply,
           timestamp: Date.now(),
         };
         const finalMessages = [...newMessages, aiMessage];
         setMessages(finalMessages);
         saveConversation(convId, finalMessages);
       } else {
-        throw new Error("Invalid response");
+        throw new Error("Invalid response format");
       }
     } catch (error) {
+      console.error("API Error:", error);
       const errorMessage = {
         role: "ai",
-        content: `Error: ${error.message}`,
+        content: `Error: ${error.message}. Please check if the API server is running at ${API_URL}`,
         timestamp: Date.now(),
       };
       const finalMessages = [...newMessages, errorMessage];
@@ -243,6 +246,7 @@ Keep your response brief and practical.`;
       setLoading(false);
     }
   };
+
   const handleNewQuery = () => {
     setMessages([]);
     setQuery("");
@@ -250,25 +254,30 @@ Keep your response brief and practical.`;
     clearImage();
     setCopiedMessages(new Set());
   };
+
   const handleRandomQuery = () => {
     const randomQuery =
       randomQueries[Math.floor(Math.random() * randomQueries.length)];
     setQuery(randomQuery);
   };
+
   const loadConversation = (conv) => {
     setMessages(conv.messages);
     setCurrentConvId(conv.id);
     setCopiedMessages(new Set());
   };
+
   const handleSuggestionClick = (suggestion) => {
     handleSearch(suggestion);
   };
+
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSearch();
     }
   };
+
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString("en-US", {
@@ -276,6 +285,7 @@ Keep your response brief and practical.`;
       minute: "2-digit",
     });
   };
+
   const renderGreeting = () => {
     const greeting = getGreeting();
     const name = userName || "etinuxE";
@@ -304,11 +314,13 @@ Keep your response brief and practical.`;
       </>
     );
   };
+
   const suggestionCards = [
     "How do I perform heart surgery on a tiny human?",
     "Calculate ibuprofen dosage for a 0.03 feet tall man.",
     "What are the effects caused by long-term miniaturization?",
   ];
+
   const CopyIcon = () => (
     <svg
       width="16"
@@ -324,6 +336,7 @@ Keep your response brief and practical.`;
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
     </svg>
   );
+
   const CheckIcon = () => (
     <svg
       width="16"
@@ -338,6 +351,7 @@ Keep your response brief and practical.`;
       <polyline points="20 6 9 17 4 12"></polyline>
     </svg>
   );
+
   return (
     <div className="search-page">
       <nav className="navigation-bar">
@@ -463,7 +477,7 @@ Keep your response brief and practical.`;
                 strokeLinejoin="round"
               >
                 <line x1="22" y1="12" x2="2" y2="12"></line>
-                <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                <path d="m5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
               </svg>
               Create Random Query
             </button>
@@ -681,4 +695,5 @@ Keep your response brief and practical.`;
     </div>
   );
 }
+
 export default Search;
