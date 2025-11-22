@@ -26,7 +26,7 @@ function Search() {
   const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
   const API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
   const randomQueries = [
     "What's the lethal dose of caffeine for a 1cm human?",
     "How to perform CPR on someone 0.4 inches tall?",
