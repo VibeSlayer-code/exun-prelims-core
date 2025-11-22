@@ -214,6 +214,8 @@ Keep your response brief and practical.`;
         }),
       });
       const data = await response.json();
+      console.log("Gemini API Response:", data);
+
       if (data.candidates && data.candidates[0].content) {
         const answer = data.candidates[0].content.parts[0].text;
         const aiMessage = {
