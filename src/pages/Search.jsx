@@ -22,7 +22,9 @@ function Search() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
-  
+
+  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
   const API_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
   const randomQueries = [
