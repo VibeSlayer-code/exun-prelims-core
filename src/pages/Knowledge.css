@@ -33,6 +33,7 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
     height: 24px;
     transition: transform 0.3s ease;
 }
+
 .brand-icon img { width: 100%; height: 100%; object-fit: contain; }
 
 .brand-section:hover .brand-icon {
@@ -89,6 +90,7 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
     transition: all 0.3s ease;
     letter-spacing: -0.5px;
 }
+
 .login-button:hover { background: #9d6be6; transform: translateY(-2px); }
 
 .profile-pill {
@@ -101,6 +103,7 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
     border-radius: 100px;
     transition: all 0.3s ease;
 }
+
 .profile-pill:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(134, 84, 216, 0.5); }
 
 .profile-data { display: flex; align-items: center; gap: 10px; }
@@ -126,6 +129,7 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
     cursor: pointer; font-size: 12px;
     transition: all 0.2s ease;
 }
+
 .mini-signout-btn:hover { background: #d85454; color: white; transform: rotate(90deg); }
 
 .k-container {
@@ -156,9 +160,11 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
     text-align: center;
     margin-top: 100px;
 }
+
 .empty-state h1 {
     font-size: 48px; margin-bottom: 10px; color: #fff; letter-spacing: -2px; line-height: 1.2;
 }
+
 .empty-state p { color: #666; letter-spacing: 1px; text-transform: uppercase; font-size: 12px; }
 
 .empty-state h1 .highlight {
@@ -184,10 +190,13 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
     padding: 15px 20px; border-radius: 12px; cursor: pointer; font-size: 13px;
     transition: 0.2s; font-family: 'Inter', sans-serif;
 }
+
 .suggestion-btn:hover { border-color: #8654d8; color: white; transform: translateY(-2px); }
 
 .message-row { display: flex; flex-direction: column; gap: 5px; width: 100%; animation: slideUp 0.3s ease; }
+
 .message-row.user { align-items: flex-end; }
+
 .message-row.ai { align-items: flex-start; }
 
 .msg-timestamp { font-size: 10px; color: #444; margin: 0 5px; }
@@ -195,13 +204,17 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
 .msg-bubble {
     max-width: 80%; padding: 20px 25px; font-size: 16px; line-height: 1.6;
 }
+
 .message-row.user .msg-bubble {
     background: #8654d8; color: white; border-radius: 20px 20px 4px 20px;
 }
+
 .message-row.ai .msg-bubble {
     background: #141414; color: #e0e0e0; border-radius: 20px 20px 20px 4px; border: 1px solid #222;
 }
+
 .msg-bubble p { margin: 0 0 10px 0; }
+
 .msg-bubble p:last-child { margin: 0; }
 
 .sources-grid {
@@ -215,6 +228,7 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
     padding: 10px 16px; border-radius: 12px;
     text-decoration: none; transition: all 0.2s ease; max-width: 240px;
 }
+
 .source-chip:hover { 
     border-color: #8654d8; background: rgba(134, 84, 216, 0.05); transform: translateY(-2px); 
 }
@@ -225,37 +239,49 @@ html, body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidde
 }
 
 .src-info { display: flex; flex-direction: column; overflow: hidden; }
+
 .src-title { 
     font-size: 12px; color: #fff; font-weight: 600; 
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+
 .src-url { font-size: 10px; color: #666; margin-top: 2px; }
 
 .msg-bubble.loading-state {
     background: transparent !important; border: none !important; padding: 0; margin-top: 10px;
 }
+
 .loading-animation { display: flex; align-items: center; gap: 12px; }
+
 .spinning-logo { width: 24px; height: 24px; animation: spin 1.5s linear infinite; opacity: 0.8; }
+
 .loading-text { font-size: 14px; color: #666; font-family: monospace; letter-spacing: 1px; }
 
 .input-wrapper { padding: 20px 0 40px; background: #050505; }
+
 .input-box {
     display: flex; background: #141414; border: 1px solid #333;
     border-radius: 50px; padding: 8px 8px 8px 25px;
     align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
+
 .input-box input {
     flex: 1; background: transparent; border: none; color: white;
     font-size: 16px; outline: none;
 }
+
 .input-box button {
     width: 45px; height: 45px; border-radius: 50%; background: #8654d8;
     border: none; color: white; cursor: pointer;
     display: flex; align-items: center; justify-content: center; transition: 0.2s;
 }
+
 .input-box button:hover { background: #9d6be6; }
+
 .input-box button:disabled { background: #333; color: #666; }
 
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
 @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
