@@ -19,6 +19,8 @@ function Knowledge() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
+  const API_URL = "https://nixun-api.onrender.com/api/agent_search";
+
   const randomQueries = [
     "Calculate caloric needs for a 1.5cm human",
     "Is spider silk strong enough for climbing gear?",
@@ -82,9 +84,9 @@ function Knowledge() {
     setLoading(true);
 
     try {
-      console.log("🌍 Calling API: /api/agent_search");
+      console.log("🌍 Calling API:", API_URL);
 
-      const response = await fetch("/api/agent_search", {
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: searchQuery }),
@@ -94,17 +96,22 @@ function Knowledge() {
 
       if (!response.ok) {
         console.error("❌ HTTP Error:", response.statusText);
-        throw new Error("HTTP Error " + response.status);
+        throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
       console.log("🧠 Backend JSON Response:", data);
 
+      // Check for error in response
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       if (data.response) {
         const aiMessage = { 
           role: "ai", 
           content: data.response, 
-          sources: data.sources, 
+          sources: data.sources || [], 
           timestamp: Date.now() 
         };
         setMessages(prev => [...prev, aiMessage]);
@@ -118,7 +125,7 @@ function Knowledge() {
 
       const errorMessage = { 
         role: "ai", 
-        content: `[SYSTEM ERROR]: Connection to Intelligence Layer failed.`, 
+        content: `[SYSTEM ERROR]: ${error.message}. Please verify the API server is running at ${API_URL}`, 
         timestamp: Date.now()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -135,12 +142,12 @@ function Knowledge() {
     <div className="knowledge-page">
       
       <nav className="navigation-bar">
-        <div className="brand-section">
+        <Link to="/" className="brand-section">
             <div className="brand-icon">
-              <img src="assets/Global/logo.png" alt="Nixun Logo" />
+              <img src="/assets/Global/logo.png" alt="Nixun Logo" />
             </div>
             <div className="brand-name">Nixun</div>
-        </div>
+        </Link>
 
         <div className="navigation-menu-container">
             <ul className="navigation-menu">
@@ -250,10 +257,10 @@ function Knowledge() {
                         placeholder={placeholder || "Enter Query..."}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        onKeyDown={(e) => e.key === 'Enter' && !loading && handleSearch()}
                         disabled={loading}
                     />
-                    <button onClick={() => handleSearch()} disabled={loading}>
+                    <button onClick={() => handleSearch()} disabled={loading || !query.trim()}>
                         ➤
                     </button>
                 </div>
