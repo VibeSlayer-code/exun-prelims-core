@@ -84,7 +84,7 @@ function Knowledge() {
     setLoading(true);
 
     try {
-      console.log("🌍 Calling API:", API_URL);
+      console.log("Calling API:", API_URL);
 
       const response = await fetch(API_URL, {
         method: "POST",
@@ -92,17 +92,17 @@ function Knowledge() {
         body: JSON.stringify({ query: searchQuery }),
       });
 
-      console.log("📥 HTTP Response Status:", response.status);
+      console.log(" HTTP Response Status:", response.status);
 
       if (!response.ok) {
-        console.error("❌ HTTP Error:", response.statusText);
+        console.error(" HTTP Error:", response.statusText);
         throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-      console.log("🧠 Backend JSON Response:", data);
+      console.log(" Backend JSON Response:", data);
 
-      // Check for error in response
+    
       if (data.error) {
         throw new Error(data.error);
       }
@@ -116,12 +116,12 @@ function Knowledge() {
         };
         setMessages(prev => [...prev, aiMessage]);
       } else {
-        console.warn("⚠️ Backend Response Missing 'response' Field:", data);
+        console.warn(" Backend Response Missing 'response' Field:", data);
         throw new Error("Agent returned no usable output.");
       }
 
     } catch (error) {
-      console.error("🚨 CAUGHT ERROR:", error);
+      console.error(" CAUGHT ERROR:", error);
 
       const errorMessage = { 
         role: "ai", 
