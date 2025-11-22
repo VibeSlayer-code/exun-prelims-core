@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import ProfileModal from '../components/ProfileModal';
 
 import './Home.css';
 
@@ -8,15 +9,14 @@ function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userImage, setUserImage] = useState(null);
   const [userName, setUserName] = useState("");
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   useEffect(() => {
     const loginStatus = localStorage.getItem('login') === 'true';
     setIsLoggedIn(loginStatus);
 
     const storedImage = localStorage.getItem('userImage');
-    const defaultImage = "public\assets\Home\default.png";
-
-    setUserImage(storedImage && storedImage !== "undefined" ? storedImage : defaultImage);
+    setUserImage(storedImage && storedImage !== "undefined" ? storedImage : null);
     setUserName(localStorage.getItem('userName') || "Agent");
   }, []);
 
@@ -50,12 +50,12 @@ function Home() {
       <div className="content-wrapper">
 
         <nav className="navigation-bar">
-          <div className="brand-section">
+          <Link to="/" className="brand-section">
             <div className="brand-icon">
               <img src="assets/Global/logo.png" alt="Nixun Logo" />
             </div>
             <div className="brand-name">Nixun</div>
-          </div>
+          </Link>
 
           <div className="navigation-menu-container">
             <ul className="navigation-menu">
@@ -67,16 +67,15 @@ function Home() {
               <li><span className="navigation-separator">/</span></li>
               <li><Link to="/map" className="navigation-link">3d Map</Link></li>
               <li><span className="navigation-separator">/</span></li>
-              <li><Link to="/library" className="navigation-link">Library</Link></li>
+              <li><Link to="/knowledge" className="navigation-link">Agent</Link></li>
             </ul>
           </div>
 
           {!isLoggedIn ? (
             <button className="login-button" onClick={() => navigate('/login')}>LOG IN</button>
           ) : (
-            <div className="profile-pill">
+            <div className="profile-pill" onClick={() => setIsProfileModalOpen(true)} style={{ cursor: 'pointer' }}>
               <div className="profile-data">
-
                 <img
                   src={userImage || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"}
                   alt="User"
@@ -84,7 +83,7 @@ function Home() {
                 />
                 <span className="nav-username">Hi, {userName}</span>
               </div>
-              <button className="mini-signout-btn" onClick={handleSignOut} title="Sign Out">
+              <button className="mini-signout-btn" onClick={(e) => { e.stopPropagation(); handleSignOut(); }} title="Sign Out">
                 ✕
               </button>
             </div>
@@ -287,6 +286,7 @@ function Home() {
           </ul>
         </footer>
       </div>
+      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
     </div>
   );
 }

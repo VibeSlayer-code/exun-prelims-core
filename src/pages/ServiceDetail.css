@@ -216,10 +216,20 @@ html, body {
     display: flex;
     align-items: center;
     gap: 12px;
+    text-decoration: none;
+    cursor: pointer;
 }
 
-.brand-icon { width: 28px; height: 28px; }
+.brand-icon {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.3s ease;
+}
 .brand-icon img { width: 100%; height: 100%; object-fit: contain; }
+
+.brand-section:hover .brand-icon {
+    transform: rotate(15deg);
+}
 
 .brand-name {
     font-size: 24px;

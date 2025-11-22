@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ProfileModal from "../components/ProfileModal";
 import "./Search.css";
 function Search() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function Search() {
   const [isChangingPlaceholder, setIsChangingPlaceholder] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const API_KEY = "AIzaSyDt8HG7jXma8iYPxV12HkOnLcQPav7Ssa4";
@@ -334,12 +336,12 @@ Keep your response brief and practical.`;
   return (
     <div className="search-page">
       <nav className="navigation-bar">
-        <div className="nixun-section">
+        <Link to="/" className="nixun-section">
           <div className="nixun-icon">
             <img src="/assets/Global/logo.png" alt="Nixun Logo" />
           </div>
           <div className="nixun-name">Nixun</div>
-        </div>
+        </Link>
         <div className="navigation-menu-container">
           <ul className="navigation-menu">
             <li>
@@ -375,8 +377,8 @@ Keep your response brief and practical.`;
               <span className="navigation-separator">/</span>
             </li>
             <li>
-              <Link to="/library" className="navigation-link">
-                Library
+              <Link to="/knowledge" className="navigation-link">
+                Agent
               </Link>
             </li>
           </ul>
@@ -386,7 +388,7 @@ Keep your response brief and practical.`;
             LOG IN
           </button>
         ) : (
-          <div className="profile-pill">
+          <div className="profile-pill" onClick={() => setIsProfileModalOpen(true)} style={{ cursor: 'pointer' }}>
             <div className="profile-data">
               <img
                 src={
@@ -400,7 +402,7 @@ Keep your response brief and practical.`;
             </div>
             <button
               className="mini-signout-btn"
-              onClick={handleSignOut}
+              onClick={(e) => { e.stopPropagation(); handleSignOut(); }}
               title="Sign Out"
             >
               ✕
@@ -670,6 +672,7 @@ Keep your response brief and practical.`;
           </div>
         </div>
       </div>
+      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
     </div>
   );
 }

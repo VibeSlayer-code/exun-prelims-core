@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ProfileModal from "../components/ProfileModal";
 import "./Knowledge.css";
 
 function Knowledge() {
@@ -7,14 +8,15 @@ function Knowledge() {
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userImage, setUserImage] = useState(null);
   const [userName, setUserName] = useState("");
-  
+
   const [placeholder, setPlaceholder] = useState("");
   const [displayedText, setDisplayedText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
   const randomQueries = [
@@ -141,16 +143,16 @@ function Knowledge() {
         {!isLoggedIn ? (
              <button className="login-button" onClick={() => navigate('/login')}>LOG IN</button>
         ) : (
-            <div className="profile-pill">
+            <div className="profile-pill" onClick={() => setIsProfileModalOpen(true)} style={{ cursor: 'pointer' }}>
                 <div className="profile-data">
-                    <img 
-                        src={userImage || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} 
-                        alt="User" 
-                        className="nav-profile-img" 
+                    <img
+                        src={userImage || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"}
+                        alt="User"
+                        className="nav-profile-img"
                     />
                     <span className="nav-username">Hi, {userName}</span>
                 </div>
-                <button className="mini-signout-btn" onClick={handleSignOut} title="Sign Out">
+                <button className="mini-signout-btn" onClick={(e) => { e.stopPropagation(); handleSignOut(); }} title="Sign Out">
                     ✕
                 </button>
             </div>
@@ -243,6 +245,7 @@ function Knowledge() {
 
         </div>
       </div>
+      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
     </div>
   );
 }

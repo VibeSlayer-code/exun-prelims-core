@@ -32,10 +32,18 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nixun-icon {
+  transition: transform 0.3s ease;
 }
 .nixun-icon img {
   width: 32px;
   height: 32px;
+}
+.nixun-section:hover .nixun-icon {
+  transform: rotate(15deg);
 }
 .nixun-name {
   font-size: 28px;

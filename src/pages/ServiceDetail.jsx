@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { servicesList } from './servicesData';
+import ProfileModal from '../components/ProfileModal';
 import './ServiceDetail.css';
 import VideoUplink from '../components/VideoUplink';
 import toast from 'react-hot-toast';
@@ -21,6 +22,7 @@ function ServiceDetail() {
     const [isReviewOpen, setIsReviewOpen] = useState(false);
     const [reviewText, setReviewText] = useState("");
     const [isVideoOpen, setIsVideoOpen] = useState(false);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     useEffect(() => {
         document.body.style.zoom = "100%";
@@ -105,14 +107,12 @@ function ServiceDetail() {
         <div className="detail-page">
 
             <nav className="navigation-bar">
-                <div className="brand-section">
-                    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-                        <div className="brand-icon">
-                            <img src="/assets/Global/logo.png" alt="Nixun Logo" />
-                        </div>
-                        <div className="brand-name">Nixun</div>
-                    </Link>
-                </div>
+                <Link to="/" className="brand-section">
+                    <div className="brand-icon">
+                        <img src="/assets/Global/logo.png" alt="Nixun Logo" />
+                    </div>
+                    <div className="brand-name">Nixun</div>
+                </Link>
                 <div className="navigation-menu-container">
                     <ul className="navigation-menu">
                         <li><Link to="/" className="navigation-link">Home</Link></li>
@@ -123,13 +123,13 @@ function ServiceDetail() {
                         <li><span className="navigation-separator">/</span></li>
                         <li><Link to="/map" className="navigation-link">3d Map</Link></li>
                         <li><span className="navigation-separator">/</span></li>
-                        <li><Link to="/library" className="navigation-link">Library</Link></li>
+                        <li><Link to="/knowledge" className="navigation-link">Agent</Link></li>
                     </ul>
                 </div>
                 {!isLoggedIn ? (
                     <button className="login-button" onClick={() => navigate('/login')}>LOG IN</button>
                 ) : (
-                    <div className="profile-pill">
+                    <div className="profile-pill" onClick={() => setIsProfileModalOpen(true)} style={{ cursor: 'pointer' }}>
                         <div className="profile-data">
                             <img
                                 src={userImage || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"}
@@ -138,7 +138,7 @@ function ServiceDetail() {
                             />
                             <span className="nav-username">Hi, {userName}</span>
                         </div>
-                        <button className="mini-signout-btn" onClick={handleSignOut} title="Sign Out">✕</button>
+                        <button className="mini-signout-btn" onClick={(e) => { e.stopPropagation(); handleSignOut(); }} title="Sign Out">✕</button>
                     </div>
                 )}
             </nav>
@@ -212,12 +212,13 @@ function ServiceDetail() {
                 </div>
             )}
             {isVideoOpen && (
-                <VideoUplink 
-                    onClose={() => setIsVideoOpen(false)} 
-                    serviceName={service.title} 
+                <VideoUplink
+                    onClose={() => setIsVideoOpen(false)}
+                    serviceName={service.title}
                 />
             )}
 
+            <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
         </div>
     );
 }

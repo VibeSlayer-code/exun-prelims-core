@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast'; 
+import { Toaster } from 'react-hot-toast';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -9,6 +9,7 @@ import Services from './pages/Services';
 import ServiceDetail from './pages/ServiceDetail';
 import Knowledge from './pages/Knowledge';
 import Map from './pages/Map';
+import ProfileSettings from './pages/ProfileSettings';
 
 function App() {
   return (
@@ -27,16 +28,16 @@ function App() {
           },
           success: {
             iconTheme: {
-              primary: '#8654d8', 
+              primary: '#8654d8',
               secondary: '#fff',
             },
             style: {
-              border: '1px solid #8654d8', 
+              border: '1px solid #8654d8',
             }
           },
           error: {
             style: {
-              border: '1px solid #d85454', 
+              border: '1px solid #d85454',
             }
           }
         }}
@@ -48,9 +49,10 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/search" element={<Search />} />
         <Route path="/services" element={<Services />} />
-        <Route path="/service/:id" element={<ServiceDetail />} /> 
+        <Route path="/service/:id" element={<ServiceDetail />} />
         <Route path="/knowledge" element={<Knowledge />} />
         <Route path="/map" element={<Map />} />
+        <Route path="/profile-settings" element={<ProfileSettings />} />
       </Routes>
     </Router>
   );
