@@ -136,7 +136,7 @@ function Knowledge() {
               <li><span className="navigation-separator">/</span></li>
               <li><Link to="/map" className="navigation-link">3d Map</Link></li>
               <li><span className="navigation-separator">/</span></li>
-              <li><Link to="/library" className="navigation-link active">Library</Link></li>
+              <li><Link to="/knowledge" className="navigation-link active">Agent</Link></li>
             </ul>
         </div>
 
