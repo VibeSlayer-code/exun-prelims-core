@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 client = genai.Client(api_key=os.getenv("API_KEY"))
-model_id = "gemini-1.5-flash"
+model_id = "gemini-2.5-flash"
 
 def get_combined_intel(query):
     print(f"-> Searching: {query}")
