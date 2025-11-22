@@ -11,7 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-client = genai.Client(api_key="AIzaSyDt8HG7jXma8iYPxV12HkOnLcQPav7Ssa4")
+client = os.getenv("API_KEY")
 model_id = "gemini-2.5-flash-preview-09-2025" 
 
 def get_combined_intel(query):
