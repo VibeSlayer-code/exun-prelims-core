@@ -20,7 +20,7 @@ function Search() {
   const [showCursor, setShowCursor] = useState(true);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
-  const API_KEY = "AIzaSyD8AEu0nUoyAlrBnqXoniZFcRlk9XOl_3o";
+  const API_KEY = "AIzaSyDt8HG7jXma8iYPxV12HkOnLcQPav7Ssa4";
   const API_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
   const randomQueries = [
