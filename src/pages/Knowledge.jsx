@@ -74,36 +74,52 @@ function Knowledge() {
   const handleSearch = async (searchQuery = query) => {
     if (!searchQuery.trim()) return;
 
+    console.log("📤 Sending Query to Backend:", searchQuery);
+
     const userMessage = { role: "user", content: searchQuery, timestamp: Date.now() };
     setMessages(prev => [...prev, userMessage]);
     setQuery("");
     setLoading(true);
 
     try {
-      const response = await fetch('/api/agent_search', {
+      console.log("🌍 Calling API: /api/agent_search");
+
+      const response = await fetch("/api/agent_search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: searchQuery }),
       });
 
+      console.log("📥 HTTP Response Status:", response.status);
+
+      if (!response.ok) {
+        console.error("❌ HTTP Error:", response.statusText);
+        throw new Error("HTTP Error " + response.status);
+      }
+
       const data = await response.json();
+      console.log("🧠 Backend JSON Response:", data);
 
       if (data.response) {
         const aiMessage = { 
-            role: "ai", 
-            content: data.response, 
-            sources: data.sources, 
-            timestamp: Date.now() 
+          role: "ai", 
+          content: data.response, 
+          sources: data.sources, 
+          timestamp: Date.now() 
         };
         setMessages(prev => [...prev, aiMessage]);
       } else {
-        throw new Error("Agent returned no data.");
+        console.warn("⚠️ Backend Response Missing 'response' Field:", data);
+        throw new Error("Agent returned no usable output.");
       }
+
     } catch (error) {
+      console.error("🚨 CAUGHT ERROR:", error);
+
       const errorMessage = { 
         role: "ai", 
         content: `[SYSTEM ERROR]: Connection to Intelligence Layer failed.`, 
-        timestamp: Date.now() 
+        timestamp: Date.now()
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -136,7 +152,7 @@ function Knowledge() {
               <li><span className="navigation-separator">/</span></li>
               <li><Link to="/map" className="navigation-link">3d Map</Link></li>
               <li><span className="navigation-separator">/</span></li>
-              <li><Link to="/library" className="navigation-link active">Library</Link></li>
+              <li><Link to="/knowledge" className="navigation-link active">Agent</Link></li>
             </ul>
         </div>
 
@@ -167,7 +183,7 @@ function Knowledge() {
                     <div className="empty-state">
                         <h1>
                             {displayedText}
-                            {showCursor && <span className="typing-cursor">|</span>}
+                            {showCursor && <span className="typing-cursor"></span>}
                         </h1>
                         <p>MICRO-SCALE ANALYSIS ENGINE.</p>
                         

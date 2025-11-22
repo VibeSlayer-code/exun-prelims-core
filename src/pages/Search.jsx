@@ -22,9 +22,11 @@ function Search() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
-  const API_KEY = "AIzaSyDt8HG7jXma8iYPxV12HkOnLcQPav7Ssa4";
+
+  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
   const API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
   const randomQueries = [
     "What's the lethal dose of caffeine for a 1cm human?",
     "How to perform CPR on someone 0.4 inches tall?",
@@ -211,7 +213,10 @@ Keep your response brief and practical.`;
           ],
         }),
       });
+      console.log("Loaded API Key:", API_KEY);
       const data = await response.json();
+      console.log("Gemini API Response:", data);
+
       if (data.candidates && data.candidates[0].content) {
         const answer = data.candidates[0].content.parts[0].text;
         const aiMessage = {
